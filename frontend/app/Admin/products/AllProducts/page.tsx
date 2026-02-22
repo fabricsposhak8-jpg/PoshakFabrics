@@ -34,10 +34,12 @@ const AllProducts = () => {
 
     useEffect(() => {
         const savedToken = localStorage.getItem("token");
-        console.log(savedToken);
         if (savedToken) setToken(savedToken);
-        fetchProducts();
     }, []);
+
+    useEffect(() => {
+        if (token) fetchProducts();  // only fetch when token is available
+    }, [token]);
 
 
     const handleDelete = async (id: number) => {
