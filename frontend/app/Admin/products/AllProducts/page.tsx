@@ -16,8 +16,8 @@ interface Product {
 }
 
 const AllProducts = () => {
+    const [token, setToken] = React.useState("");
     const [products, setProducts] = useState<Product[]>([]);
-    const token = localStorage.getItem("token");
 
     const fetchProducts = async () => {
         try {
@@ -33,6 +33,8 @@ const AllProducts = () => {
     };
 
     useEffect(() => {
+        const savedToken = localStorage.getItem("token");
+        if (savedToken) setToken(savedToken);
         fetchProducts();
     }, []);
 
