@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:3000", "https://poshak-fabrics.vercel.app/"],
+    origin: ["http://localhost:3000", "https://poshak-fabrics.vercel.app"],
     credentials: true
 }));
 app.use(express.json());
