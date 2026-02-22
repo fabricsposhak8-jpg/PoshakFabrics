@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useUser } from "../context/page";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -13,6 +14,8 @@ export default function LoginPage() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false); // toggle state
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -69,16 +72,23 @@ export default function LoginPage() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-
-                    <div>
+                    <div className="relative">
                         <label className="block mb-1 font-medium">Password</label>
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"} // toggle type
                             required
                             className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        {/* Eye icon button */}
+                        <button
+                            type="button"
+                            className="absolute right-3 top-9 text-gray-500"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
                     </div>
 
                     <button
