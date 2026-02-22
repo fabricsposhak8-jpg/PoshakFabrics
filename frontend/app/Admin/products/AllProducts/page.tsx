@@ -21,7 +21,7 @@ const AllProducts = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`, {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/users`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
