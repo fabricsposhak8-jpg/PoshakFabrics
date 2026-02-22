@@ -15,11 +15,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// PostgreSQL pool — tuned for Neon serverless (cold starts + dropped idle connections)
 export const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
-    connectionTimeoutMillis: 30000,  // 30s — Neon cold starts can be slow
+    connectionTimeoutMillis: 30000,
     idleTimeoutMillis: 10000,        // release idle connections quickly
     max: 5,                          // keep pool small for serverless
 });
