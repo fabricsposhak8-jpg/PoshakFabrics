@@ -44,9 +44,9 @@ const Header = () => {
                     </button>
 
                     {/* Desktop Login Button (Hidden on Mobile) */}
-                    <button className="hidden md:block bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
+                    <a href="/login" className="hidden md:block bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
                         Login
-                    </button>
+                    </a>
 
                     {/* Mobile Menu Toggle (Visible only on Mobile) */}
                     <button
