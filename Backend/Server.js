@@ -9,8 +9,20 @@ import productRoutes from "./routers/product_router.js";
 dotenv.config();
 const app = express();
 
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://poshak-fabrics.vercel.app"
+];
+
 app.use(cors({
-    origin: ["http://localhost:3000", "https://poshak-fabrics.vercel.app"],
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true); // allow server-to-server or Postman
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
 }));
 app.use(express.json());
