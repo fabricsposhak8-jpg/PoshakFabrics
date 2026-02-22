@@ -29,7 +29,14 @@ const Header = () => {
                     <ul className="flex items-center space-x-8 text-gray-700 font-medium">
                         <li><Link href="/" className="hover:text-black transition">Home</Link></li>
                         <li><Link href="/shop" className="hover:text-black transition">Shop</Link></li>
-                        <li><Link href="/collections" className="hover:text-black transition">Collections</Link></li>
+                        <li className="relative group">
+                            <Link href="/user/collections" className="hover:text-black transition">Collections</Link>
+                            <div className="absolute left-0 top-full w-48 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200">
+                                <Link href="/user/collections/stitched" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Stitched</Link>
+                                <Link href="/user/collections/unstitched" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Unstitched</Link>
+                            </div>
+                        </li>
+
                         <li><Link href="#about" className="hover:text-black transition">About</Link></li>
                         <li><Link href="#contact" className="hover:text-black transition">Contact</Link></li>
                     </ul>
@@ -63,7 +70,7 @@ const Header = () => {
                 <div className="md:hidden absolute top-full left-0 w-full bg-white border-b shadow-lg flex flex-col p-6 space-y-4 animate-in slide-in-from-top-5">
                     <Link href="/" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Home</Link>
                     <Link href="/shop" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Shop</Link>
-                    <Link href="/collections" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Collections</Link>
+                    <Link href="/user/collections" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Collections</Link>
                     <Link href="#about" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">About</Link>
                     <Link href="#contact" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Contact</Link>
 
