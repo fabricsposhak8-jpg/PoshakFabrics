@@ -17,10 +17,15 @@ interface Product {
 
 const AllProducts = () => {
     const [products, setProducts] = useState<Product[]>([]);
+    const token = localStorage.getItem("token");
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setProducts(response.data);
         } catch (error) {
             console.error("Error fetching products:", error);
