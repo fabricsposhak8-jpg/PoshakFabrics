@@ -23,14 +23,12 @@ export default function LoginPage() {
 
         try {
             const { data } = await axios.post(
-                "http://localhost:5000/api/auth/login",
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`,
                 { email, password }
             );
 
-            // Save token
             localStorage.setItem("token", data.token);
 
-            // Save user in context
             login({
                 id: data.user.id,
                 username: data.user.username,

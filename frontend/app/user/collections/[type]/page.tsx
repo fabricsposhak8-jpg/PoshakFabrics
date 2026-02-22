@@ -14,7 +14,7 @@ export default function ClothesPage({ params }: PageProps) {
 
     const fetchProducts = async () => {
         try {
-            const result = await axios.get(`http://localhost:5000/api/products/user`);
+            const result = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/user`);
             const filtered = result.data.filter(
                 (item: any) => item.type.toLowerCase() === lowerType
             );

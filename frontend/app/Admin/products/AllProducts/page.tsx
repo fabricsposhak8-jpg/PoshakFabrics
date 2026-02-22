@@ -20,7 +20,7 @@ const AllProducts = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/products");
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`);
             setProducts(response.data);
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -34,7 +34,7 @@ const AllProducts = () => {
 
     const handleDelete = async (id: number) => {
         try {
-            await axios.delete(`http://localhost:5000/api/products/${id}`);
+            await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${id}`);
             fetchProducts();
         } catch (error) {
             console.error("Error deleting product:", error);
