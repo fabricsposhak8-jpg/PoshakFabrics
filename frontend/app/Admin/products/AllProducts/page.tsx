@@ -34,6 +34,7 @@ const AllProducts = () => {
 
     useEffect(() => {
         const savedToken = localStorage.getItem("token");
+        console.log(savedToken);
         if (savedToken) setToken(savedToken);
         fetchProducts();
     }, []);
