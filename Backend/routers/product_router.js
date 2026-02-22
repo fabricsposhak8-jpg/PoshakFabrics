@@ -5,7 +5,7 @@ import { admin_Middleware } from "../middlewares/admin_middleware.js";
 const router = express.Router();
 
 router.post("/add", authMiddleware, admin_Middleware, createProductController);
-router.get("/", admin_Middleware, admin_Middleware, getAllProductsController);
+router.get("/", authMiddleware, admin_Middleware, getAllProductsController);
 router.delete("/:id", authMiddleware, admin_Middleware, deleteProductController);
 router.put("/:id", authMiddleware, admin_Middleware, updateProductController);
 
