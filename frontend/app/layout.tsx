@@ -4,7 +4,7 @@
 import "./globals.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
-import { UserProvider } from "./context/page";
+import UserProvider from "./context/page";
 import { useUser } from "./context/page";
 import { usePathname } from "next/navigation";
 
