@@ -1,10 +1,13 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 
 const page = () => {
 
+    const [success, setsuccess] = useState(false)
+
+    const [token, setToken] = useState("")
     const [product, setproduct] = useState({
         name: "",
         brand: "",
@@ -27,8 +30,32 @@ const page = () => {
         const newProduct = { ...product, fabric_details }
 
         try {
-            const response = await axios.post("http://localhost:5000/api/products/add", newProduct)
-            console.log(response.data)
+            const response = await axios.post("http://localhost:5000/api/products/add", newProduct, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            if (response.status === 200) {
+                setproduct({
+                    name: "",
+                    brand: "",
+                    category: "",
+                    price: "",
+                    currency: "PKR",
+                    description: "",
+                    stock: "",
+                    status: "active",
+                    type: "",
+                })
+                setfabric_details([{ key: "", value: "" }])
+            }
+
+            setsuccess(true)
+            setTimeout(() => {
+                setsuccess(false)
+            }, 2000)
+
         } catch (error) {
             console.log(error)
         }
@@ -36,6 +63,15 @@ const page = () => {
 
         console.log(newProduct)
     }
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("token")
+        if (token) {
+            setToken(token)
+        }
+
+    }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
         setproduct({ ...product, [e.target.name]: e.target.value })
@@ -60,6 +96,13 @@ const page = () => {
     return (
         <div className='max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg'>
             <h1 className='text-3xl font-bold mb-6 text-center text-gray-800'>Add Product</h1>
+
+            {success && (
+                <div className="bg-green-500 text-white px-4 py-2 rounded mb-4">
+                    Product added successfully
+                </div>
+            )}
+
             <div className="flex justify-end mb-6">
                 <Link
                     href="/Admin/products/AllProducts"

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface Product {
     id: number;
@@ -16,6 +17,7 @@ interface Product {
 }
 
 const AllProducts = () => {
+    const router = useRouter();
     const [token, setToken] = React.useState("");
     const [products, setProducts] = useState<Product[]>([]);
 
@@ -51,10 +53,6 @@ const AllProducts = () => {
         }
     };
 
-    const handleEdit = async (id: number) => {
-
-    }
-
 
     return (
         <div className="p-8">
@@ -65,7 +63,7 @@ const AllProducts = () => {
                 </h1>
 
                 <Link
-                    href="/admin/products"
+                    href="/Admin/products"
                     className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg shadow"
                 >
                     + Add Product
@@ -106,7 +104,9 @@ const AllProducts = () => {
 
                                 <td className="p-3 flex justify-center gap-3">
                                     <button
-                                        onClick={() => handleEdit(product.id)}
+                                        onClick={() => {
+                                            router.push(`/Admin/products/edit/${product.id}`);
+                                        }}
                                         className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
                                         Edit
                                     </button>

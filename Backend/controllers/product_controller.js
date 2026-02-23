@@ -1,4 +1,4 @@
-import { createProduct, getAllProducts, deleteProduct, updateProduct } from "../models/product_model.js";
+import { createProduct, getAllProducts, deleteProduct, updateProduct, getProductById } from "../models/product_model.js";
 
 export const createProductController = async (req, res) => {
     try {
@@ -40,3 +40,13 @@ export const updateProductController = async (req, res) => {
     }
 }
 
+
+export const getProductByIdController = async (req, res) => {
+    try {
+        const product = await getProductById(req.params.id);
+        return res.status(200).json(product);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ msg: "Server error" });
+    }
+}
