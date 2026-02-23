@@ -48,30 +48,47 @@ export default function AdminDashboard() {
     if (!user) return null;
 
     return (
-        <div className="p-8">
+        <div className="p-4 sm:p-6 md:p-8">
             {/* Header */}
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold">Dashboard</h1>
-                    <p className="text-gray-600">Welcome, {user.username}</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+                    <p className="text-gray-600 text-sm sm:text-base">
+                        Welcome, {user.username}
+                    </p>
                 </div>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white shadow-md rounded-xl p-6 border-l-4 border-yellow-500">
-                    <h2 className="text-xl font-semibold">Total Products</h2>
-                    <p className="text-3xl font-bold text-yellow-500 mt-2">{productsCount}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {/* Products */}
+                <div className="bg-white shadow-md rounded-xl p-5 sm:p-6 border-l-4 border-yellow-500 hover:shadow-lg transition">
+                    <h2 className="text-base sm:text-lg font-semibold">
+                        Total Products
+                    </h2>
+                    <p className="text-2xl sm:text-3xl font-bold text-yellow-500 mt-2">
+                        {productsCount}
+                    </p>
                 </div>
 
-                <div className="bg-white shadow-md rounded-xl p-6 border-l-4 border-[#37888F]">
-                    <h2 className="text-xl font-semibold">Total Orders</h2>
-                    <p className="text-3xl font-bold text-[#37888F] mt-2">120</p>
+                {/* Orders */}
+                <div className="bg-white shadow-md rounded-xl p-5 sm:p-6 border-l-4 border-[#37888F] hover:shadow-lg transition">
+                    <h2 className="text-base sm:text-lg font-semibold">
+                        Total Orders
+                    </h2>
+                    <p className="text-2xl sm:text-3xl font-bold text-[#37888F] mt-2">
+                        120
+                    </p>
                 </div>
 
-                <div className="bg-white shadow-md rounded-xl p-6 border-l-4 border-[#AB315A]">
-                    <h2 className="text-xl font-semibold">Messages</h2>
-                    <p className="text-3xl font-bold text-[#AB315A] mt-2">{messagesCount}</p>
+                {/* Messages */}
+                <div className="bg-white shadow-md rounded-xl p-5 sm:p-6 border-l-4 border-[#AB315A] hover:shadow-lg transition">
+                    <h2 className="text-base sm:text-lg font-semibold">
+                        Messages
+                    </h2>
+                    <p className="text-2xl sm:text-3xl font-bold text-[#AB315A] mt-2">
+                        {messagesCount}
+                    </p>
                 </div>
             </div>
         </div>

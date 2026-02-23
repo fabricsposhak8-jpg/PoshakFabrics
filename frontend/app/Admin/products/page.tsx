@@ -127,8 +127,8 @@ const page = () => {
                     </select>
 
                     <select className='border p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow-500' name="type" value={product.type} onChange={handleChange}>
-                        <option value="Stiched">Stiched</option>
-                        <option value="Unstiched">Unstiched</option>
+                        <option value="stitched">Stiched</option>
+                        <option value="unstitched">Unstiched</option>
                     </select>
 
                     <input className='border p-3 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow-500' type="text" placeholder='Product Stock' name='stock' value={product.stock} onChange={handleChange} />

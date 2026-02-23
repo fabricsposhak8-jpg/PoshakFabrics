@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
     return (
         <footer className="bg-gray-100 mt-16">
@@ -5,23 +7,39 @@ export default function Footer() {
 
                 <div>
                     <h3 className="font-semibold mb-3">Poshak Fabrics</h3>
-                    <p>Premium ethnic wear for modern women.</p>
+                    <p>Premium ethnic wear for modern people.</p>
                 </div>
 
                 <div>
                     <h4 className="font-semibold mb-3">Shop</h4>
                     <ul className="space-y-2">
-                        <li>Unstitched</li>
-                        <li>Stitched</li>
-                        <li>New Arrivals</li>
-                        <li>Sale</li>
+                        <li>
+                            <Link href="/user/collections/unstitched" className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full">
+                                Unstitched
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/user/collections/stitched" className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full">
+                                Stitched
+                            </Link>
+                        </li>
+                        <li>
+                            New Arrivals
+                        </li>
+                        <li>
+                            Sale
+                        </li>
                     </ul>
                 </div>
 
                 <div>
                     <h4 className="font-semibold mb-3">Support</h4>
                     <ul className="space-y-2">
-                        <li>Contact Us</li>
+                        <li>
+                            <Link href="/#contact" className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full">
+                                Contact Us
+                            </Link>
+                        </li>
                         <li>Shipping Policy</li>
                         <li>Return Policy</li>
                     </ul>

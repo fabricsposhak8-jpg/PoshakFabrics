@@ -47,7 +47,7 @@ const ContactUs = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center px-4 py-16">
+        <div className="flex flex-col items-center px-4 py-8 md:py-10 lg:py-12">
             {/* Heading */}
             <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
                 Contact Us
