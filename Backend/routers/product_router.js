@@ -13,5 +13,6 @@ router.put("/update/:id", authMiddleware, admin_Middleware, updateProductControl
 
 // User Routes
 router.get("/user", getAllProductsController);
+router.get("/user/:id", getProductByIdController);
 
 export default router;

@@ -37,8 +37,8 @@ const Header = () => {
                             </div>
                         </li>
 
-                        <li><Link href="#about" className="hover:text-black transition">About</Link></li>
-                        <li><Link href="#contact" className="hover:text-black transition">Contact</Link></li>
+                        <li><Link href="/#about" className="hover:text-black transition">About</Link></li>
+                        <li><Link href="/#contact" className="hover:text-black transition">Contact</Link></li>
                     </ul>
                 </nav>
 
@@ -71,8 +71,8 @@ const Header = () => {
                     <Link href="/" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Home</Link>
                     <Link href="/shop" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Shop</Link>
                     <Link href="/user/collections" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Collections</Link>
-                    <Link href="#about" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">About</Link>
-                    <Link href="#contact" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Contact</Link>
+                    <Link href="/#about" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">About</Link>
+                    <Link href="/#contact" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Contact</Link>
 
                     <hr className="border-gray-200" />
 

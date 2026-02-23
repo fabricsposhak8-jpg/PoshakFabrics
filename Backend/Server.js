@@ -5,6 +5,7 @@ import { Pool } from "pg";
 
 import authRoutes from "./routers/auth_router.js";
 import productRoutes from "./routers/product_router.js";
+import messageRoutes from "./routers/message_router.js";
 
 dotenv.config();
 const app = express();
@@ -49,6 +50,7 @@ pool.connect()
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/messages", messageRoutes);
 app.get("/", (req, res) => res.send("POSHAK FABRICS Backend running!"));
 
 const PORT = process.env.PORT || 5000;

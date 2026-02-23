@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import axios from "axios";
+import Link from "next/link";
 
 interface PageProps {
     params: Promise<{ type: string }>;
@@ -64,21 +65,6 @@ export default function ClothesPage({ params }: PageProps) {
                             <p className="text-gray-600 mb-1">Category: {product.category}</p>
                             <p className="text-gray-600 mb-2">Type: {product.type}</p>
 
-                            {/* Fabric Details */}
-                            <div className="mt-2">
-                                <p className="font-semibold mb-1">Fabric Details:</p>
-                                <ul className="list-disc list-inside text-gray-700 text-sm">
-                                    {product.fabric_details && product.fabric_details.length > 0 ? (
-                                        product.fabric_details.map((fabric: any, index: number) => (
-                                            <li key={index}>
-                                                {fabric.key} : {fabric.value}
-                                            </li>
-                                        ))
-                                    ) : (
-                                        <li>No fabric details available</li>
-                                    )}
-                                </ul>
-                            </div>
                         </div>
 
                         {/* Stock Badge */}
@@ -93,7 +79,16 @@ export default function ClothesPage({ params }: PageProps) {
                                 </span>
                             )}
                         </div>
+
+                        <Link
+                            href={`/user/collections/${type}/${product.id}`}
+                            className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+                        >
+                            View Details
+                        </Link>
                     </div>
+
+
                 ))}
             </div>
 
