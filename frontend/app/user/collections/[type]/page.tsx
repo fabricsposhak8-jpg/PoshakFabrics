@@ -12,22 +12,41 @@ export default function ClothesPage({ params }: PageProps) {
     const lowerType = type.toLowerCase();
 
     const [products, setProducts] = React.useState<any[]>([]);
+    const [loading, setLoading] = React.useState(true); // ✅ loading state
 
     const fetchProducts = async () => {
         try {
-            const result = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/user`);
+            setLoading(true); // start loading
+            const result = await axios.get(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/user`
+            );
+
             const filtered = result.data.filter(
                 (item: any) => item.type.toLowerCase() === lowerType
             );
+
             setProducts(filtered);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false); // stop loading
         }
     };
 
     React.useEffect(() => {
         fetchProducts();
     }, []);
+
+    // ✅ Loading UI
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-[60vh]">
+                <p className="text-xl font-semibold animate-pulse">
+                    Loading products...
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="mx-auto py-10 ml-10">
@@ -62,12 +81,14 @@ export default function ClothesPage({ params }: PageProps) {
                                         : `${product.price} ${product.currency}`}
                             </p>
 
-                            <p className="text-gray-600 mb-1">Category: {product.category}</p>
-                            <p className="text-gray-600 mb-2">Type: {product.type}</p>
-
+                            <p className="text-gray-600 mb-1">
+                                Category: {product.category}
+                            </p>
+                            <p className="text-gray-600 mb-2">
+                                Type: {product.type}
+                            </p>
                         </div>
 
-                        {/* Stock Badge */}
                         <div className="mt-4">
                             {product.stock > 0 ? (
                                 <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
@@ -87,8 +108,6 @@ export default function ClothesPage({ params }: PageProps) {
                             View Details
                         </Link>
                     </div>
-
-
                 ))}
             </div>
 
