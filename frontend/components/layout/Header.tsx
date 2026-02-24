@@ -124,9 +124,11 @@ const Header = () => {
 
                         <hr className="border-gray-200 my-2" />
 
-                        <button className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium">
+                        <Link href="/login"
+                            onClick={() => setIsOpen(false)}
+                            className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium">
                             Login
-                        </button>
+                        </Link>
                     </div>
                 )
             }
