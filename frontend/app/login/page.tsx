@@ -41,11 +41,13 @@ export default function LoginPage() {
                 role: data.user.role,
             });
 
+            console.log(data.user.role);
             if (data.user.role === "admin") {
-
                 router.push("/Admin");
             }
-            router.push("/")
+            else {
+                router.push("/")
+            }
 
 
         } catch (err: any) {
