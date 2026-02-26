@@ -3,10 +3,14 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useCart } from "@/app/context/CartContext";
+import { ShoppingCart, CheckCircle } from "lucide-react";
 
 const UserProductView = () => {
     const { id } = useParams();
     const [product, setProduct] = useState<any>(null);
+    const { addToCart } = useCart();
+    const [added, setAdded] = useState(false);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -19,6 +23,21 @@ const UserProductView = () => {
         };
         if (id) fetchProduct();
     }, [id]);
+
+    const handleAddToCart = () => {
+        if (!product) return;
+        addToCart({
+            id: product.id,
+            name: product.name,
+            brand: product.brand,
+            price: product.price,
+            currency: product.currency,
+            type: product.type,
+            category: product.category,
+        });
+        setAdded(true);
+        setTimeout(() => setAdded(false), 2500);
+    };
 
     if (!product) return <div className="flex justify-center items-center h-screen text-gray-500 text-lg">Loading product details...</div>;
 
@@ -61,11 +80,27 @@ const UserProductView = () => {
             </div>
 
             {/* Call to Action */}
-            <div className="mt-8 flex flex-col md:flex-row gap-4 items-center">
-                <p className="text-gray-700 text-lg">For booking, send a message on Contact us or call us.</p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center">
+                {/* Add to Cart */}
+                <button
+                    onClick={handleAddToCart}
+                    disabled={product.stock === 0}
+                    className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-300 hover:-translate-y-0.5
+                        ${added
+                            ? "bg-green-600 text-white hover:bg-green-700"
+                            : product.stock === 0
+                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                : "bg-black text-white hover:bg-[#B9974F] hover:shadow-lg"
+                        }`}
+                >
+                    {added ? <CheckCircle size={18} /> : <ShoppingCart size={18} />}
+                    {added ? "Added to Cart!" : product.stock === 0 ? "Out of Stock" : "Add to Cart"}
+                </button>
+
+                <p className="text-gray-700 text-sm">For booking, send a message on Contact us or call us.</p>
                 <Link
                     href="/#contact"
-                    className="mt-2 md:mt-0 inline-block bg-[#B9974F] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#B9974F] shadow-lg transition-all transform hover:-translate-y-1"
+                    className="inline-block bg-[#B9974F] text-white px-6 py-3 rounded-xl font-medium hover:bg-[#a0833e] shadow-md transition-all hover:-translate-y-0.5"
                 >
                     Contact Us
                 </Link>

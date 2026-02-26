@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import UserProvider from "./context/page";
+import CartProvider from "./context/CartContext";
 import LayoutClient from "../components/LayoutClient";
 
 export const metadata: Metadata = {
@@ -37,9 +38,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="flex flex-col min-h-screen">
-        <UserProvider>
-          <LayoutClient>{children}</LayoutClient>
-        </UserProvider>
+        <CartProvider>
+          <UserProvider>
+            <LayoutClient>{children}</LayoutClient>
+          </UserProvider>
+        </CartProvider>
       </body>
     </html>
   );

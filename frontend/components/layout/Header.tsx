@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
+import { useCart } from "@/app/context/CartContext";
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false); // mobile sidebar
     const [collectionsOpenMobile, setCollectionsOpenMobile] = useState(false); // mobile dropdown
     const [collectionsHoverDesktop, setCollectionsHoverDesktop] = useState(false); // desktop dropdown
+    const { totalItems } = useCart();
 
     const [scrolled, setScrolled] = useState(false);
 
@@ -73,8 +75,13 @@ const Header = () => {
                 {/* Right Icons */}
                 <div className="flex items-center space-x-4">
                     <Link href={"/cart"}
-                        className="text-gray-700 hover:text-black transition">
+                        className="relative text-gray-700 hover:text-black transition">
                         <ShoppingCart size={24} />
+                        {totalItems > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-[#B9974F] text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none">
+                                {totalItems > 99 ? "99+" : totalItems}
+                            </span>
+                        )}
                     </Link>
 
                     <a href="/login" className="hidden md:block bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
