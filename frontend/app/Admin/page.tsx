@@ -39,7 +39,7 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         if (!user || user.role !== "admin") {
-            router.push("/login");
+            router.push("/");
         } else {
             getDetails(); // call only if user is admin
         }
