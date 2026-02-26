@@ -1,0 +1,13 @@
+import { MetadataRoute } from 'next'
+
+export default function sitemap(): MetadataRoute.Sitemap {
+    return [
+        {
+            url: 'https://www.poshakfabrics.org',
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 1,
+        },
+        // Add other pages here as you build them
+    ]
+}
