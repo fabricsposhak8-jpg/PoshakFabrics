@@ -25,8 +25,6 @@ export default function ClothesPage({ params }: PageProps) {
                 (item: any) => item.type.toLowerCase() === lowerType
             );
 
-            console.log("Filtered", filtered);
-
             setProducts(filtered);
         } catch (error) {
             console.log(error);
