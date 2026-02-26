@@ -72,9 +72,10 @@ const Header = () => {
 
                 {/* Right Icons */}
                 <div className="flex items-center space-x-4">
-                    <button className="text-gray-700 hover:text-black transition">
+                    <Link href={"/cart"}
+                        className="text-gray-700 hover:text-black transition">
                         <ShoppingCart size={24} />
-                    </button>
+                    </Link>
 
                     <a href="/login" className="hidden md:block bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
                         Login

@@ -41,7 +41,12 @@ export default function LoginPage() {
                 role: data.user.role,
             });
 
-            router.push("/Admin");
+            if (data.user.role === "admin") {
+
+                router.push("/Admin");
+            }
+            router.push("/")
+
 
         } catch (err: any) {
             setError(err.response?.data?.message || "Login failed");
@@ -102,7 +107,7 @@ export default function LoginPage() {
 
                 <p className="text-center text-sm mt-4">
                     Don’t have an account?{" "}
-                    <a href="/register" className="text-yellow-600 font-semibold">
+                    <a href="/register" className="text-yellow-600 font-semibold hover:underline">
                         Register
                     </a>
                 </p>
