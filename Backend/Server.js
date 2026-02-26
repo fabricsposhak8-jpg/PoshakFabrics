@@ -12,7 +12,7 @@ const app = express();
 
 const allowedOrigins = [
     "http://localhost:3000",
-    "https://poshak-fabrics.vercel.app"
+    "https://www.poshakfabrics.org"
 ];
 
 app.use(cors({
