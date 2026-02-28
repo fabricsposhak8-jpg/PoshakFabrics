@@ -1,5 +1,6 @@
 import ContactUs from "@/components/ContactUs";
 import Slider from "@/components/Slider";
+import CollectionsPreview from "@/components/CollectionsPreview";
 
 const Page = () => {
   return (
@@ -36,6 +37,9 @@ const Page = () => {
       <div className="my-8 md:my-12 lg:my-16">
         <Slider />
       </div>
+
+      {/* Collections Preview Section */}
+      <CollectionsPreview />
 
       {/* About Section */}
       <section id="about" className="py-12 md:py-16 lg:py-20 px-4 md:px-8 lg:px-16">

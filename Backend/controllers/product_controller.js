@@ -2,7 +2,7 @@ import { createProduct, getAllProducts, deleteProduct, updateProduct, getProduct
 
 export const createProductController = async (req, res) => {
     try {
-        const product = await createProduct(req.body);
+        const product = await createProduct(req.body, req.files);
         return res.status(200).json(product);
     } catch (err) {
         console.error(err);
@@ -32,7 +32,7 @@ export const deleteProductController = async (req, res) => {
 
 export const updateProductController = async (req, res) => {
     try {
-        const product = await updateProduct(req.params.id, req.body);
+        const product = await updateProduct(req.params.id, req.body, req.files);
         return res.status(200).json(product);
     } catch (err) {
         console.error(err);

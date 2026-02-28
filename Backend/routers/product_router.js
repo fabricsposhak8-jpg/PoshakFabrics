@@ -2,13 +2,14 @@ import express from "express";
 import { createProductController, getAllProductsController, deleteProductController, updateProductController, getProductByIdController } from "../controllers/product_controller.js";
 import { authMiddleware } from "../middlewares/auth_middleware.js";
 import { admin_Middleware } from "../middlewares/admin_middleware.js";
+import upload from "../middlewares/multer.js";
 const router = express.Router();
 
-router.post("/add", authMiddleware, admin_Middleware, createProductController);
+router.post("/add", authMiddleware, admin_Middleware, upload.array("images", 5), createProductController);
 router.get("/get/:id", authMiddleware, admin_Middleware, getProductByIdController);
 router.get("/", authMiddleware, admin_Middleware, getAllProductsController);
 router.delete("/:id", authMiddleware, admin_Middleware, deleteProductController);
-router.put("/update/:id", authMiddleware, admin_Middleware, updateProductController);
+router.put("/update/:id", authMiddleware, admin_Middleware, upload.array("images", 5), updateProductController);
 
 
 // User Routes

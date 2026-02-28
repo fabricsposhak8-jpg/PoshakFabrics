@@ -1,5 +1,5 @@
+import "./config/env.js";
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import { Pool } from "pg";
 
@@ -8,7 +8,7 @@ import productRoutes from "./routers/product_router.js";
 import messageRoutes from "./routers/message_router.js";
 import cartRoutes from "./routers/cart_router.js";
 
-dotenv.config();
+
 const app = express();
 
 const allowedOrigins = [
