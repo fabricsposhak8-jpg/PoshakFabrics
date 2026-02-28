@@ -39,7 +39,7 @@ export default function CollectionsPreview() {
     }, []);
 
     return (
-        <section className="py-16 px-4 bg-gradient-to-b from-white to-[#fdf8f2]">
+        <section className="py-16 px-4">
             <div className="max-w-5xl mx-auto">
 
                 {/* Heading */}
