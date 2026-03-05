@@ -3,11 +3,34 @@ import { MetadataRoute } from 'next'
 export default function sitemap(): MetadataRoute.Sitemap {
     return [
         {
-            url: 'https://www.poshakfabrics.org',
+            url: 'https://poshakfabrics.org',
             lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 1,
         },
-        // Add other pages here as you build them
+        {
+            url: 'https://poshakfabrics.org/user/collections/stitched',
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+        },
+        {
+            url: 'https://poshakfabrics.org/user/collections/unstitched',
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+        },
+        {
+            url: 'https://poshakfabrics.org/login',
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.3,
+        },
+        {
+            url: 'https://poshakfabrics.org/register',
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.3,
+        },
     ]
 }
