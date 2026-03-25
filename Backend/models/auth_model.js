@@ -1,6 +1,6 @@
 import { pool } from "../Server.js"
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+
 export const createUser = async (username, email, password, role = "user") => {
     const hashedpassword = await bcrypt.hash(password, 10);
     const querry = `

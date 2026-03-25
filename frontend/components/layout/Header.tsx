@@ -63,6 +63,14 @@ const Header = () => {
                                 Contact
                             </Link>
                         </li>
+                        <li>
+                            <Link
+                                href="/user/orders"
+                                className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#B9974F] after:transition-all after:duration-300 hover:after:w-full"
+                            >
+                                My Orders
+                            </Link>
+                        </li>
                     </ul>
                 </nav>
 
@@ -137,6 +145,7 @@ const Header = () => {
                         <Link href="/" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Home</Link>
                         <Link href="/#about" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">About</Link>
                         <Link href="/#contact" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Contact</Link>
+                        <Link href="/user/orders" onClick={() => setIsOpen(false)} className="text-[#B9974F] hover:text-[#a0833e] font-medium text-lg">My Orders</Link>
                         <hr className="border-gray-200 my-2" />
                         <Link href="/login" onClick={() => setIsOpen(false)} className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium">
                             Login
