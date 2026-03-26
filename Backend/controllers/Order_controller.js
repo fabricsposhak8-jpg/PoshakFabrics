@@ -5,9 +5,9 @@ export const createOrder = async (req, res) => {
         const user_id = req.user.id;
         const product_id = req.params.id;
         const shipping_price = 250;
-        const { payment_method, total_price } = req.body;
+        const { payment_method, total_price, quantity, country, city, postal_code, address_line } = req.body;
         const payment_receipt = req.file;
-        const order = await AddOrder(user_id, product_id, payment_method, total_price, shipping_price, payment_receipt);
+        const order = await AddOrder(user_id, product_id, payment_method, total_price, shipping_price, payment_receipt, quantity, country, city, postal_code, address_line);
         res.status(201).json({ msg: "Order created successfully", order });
     } catch (error) {
         console.log(error);

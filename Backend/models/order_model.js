@@ -1,7 +1,7 @@
 import { pool } from "../Server.js"
 import cloudinary from "../config/cloudinary.js"
 
-export const AddOrder = async (user_id, product_id, payment_method, total_price, shipping_price, file) => {
+export const AddOrder = async (user_id, product_id, payment_method, total_price, shipping_price, file, quantity, country, city, postal_code, address_line) => {
     try {
 
         let receiptdata = null;
@@ -20,12 +20,12 @@ export const AddOrder = async (user_id, product_id, payment_method, total_price,
         }
 
         const query = `
-    INSERT INTO orders (user_id, product_id, payment_method, total_price, shipping_price, payment_receipt)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO orders (user_id, product_id, payment_method, total_price, shipping_price, payment_receipt,quantity ,country , city,postal_code, address_line)
+    VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9,$10,$11)
     RETURNING *;
     `;
 
-        const values = [user_id, product_id, payment_method, total_price, shipping_price, JSON.stringify(receiptdata)];
+        const values = [user_id, product_id, payment_method, total_price, shipping_price, JSON.stringify(receiptdata), quantity, country, city, postal_code, address_line];
         const result = await pool.query(query, values);
         return result.rows[0];
     } catch (error) {
