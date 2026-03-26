@@ -14,6 +14,7 @@ interface Product {
     stock: number;
     status: string;
     type: string;
+    after_discou: number;
 }
 
 const AllProducts = () => {
@@ -46,7 +47,11 @@ const AllProducts = () => {
 
     const handleDelete = async (id: number) => {
         try {
-            await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${id}`);
+            await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             fetchProducts();
         } catch (error) {
             console.error("Error deleting product:", error);
@@ -81,6 +86,7 @@ const AllProducts = () => {
                             <th className="p-3">Category</th>
                             <th className="p-3">Type</th>
                             <th className="p-3">Price</th>
+                            <th className="p-3">Discounted Price</th>
                             <th className="p-3">Stock</th>
                             <th className="p-3">Status</th>
                             <th className="p-3 text-center">Actions</th>
@@ -99,6 +105,7 @@ const AllProducts = () => {
                                 <td className="p-3">{product.category}</td>
                                 <td className="p-3">{product.type}</td>
                                 <td className="p-3">Rs {product.price}</td>
+                                <td className="p-3">Rs {product.after_discou}</td>
                                 <td className="p-3">{product.stock}</td>
                                 <td className="p-3">{product.status}</td>
 
