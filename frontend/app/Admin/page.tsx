@@ -11,6 +11,7 @@ export default function AdminDashboard() {
 
     const [productsCount, setProductsCount] = useState(0);
     const [messagesCount, setMessagesCount] = useState(0);
+    const [ordersCount, setOrdersCount] = useState(0);
 
     // Fetch details
     const getDetails = async () => {
@@ -18,8 +19,11 @@ export default function AdminDashboard() {
             const token = localStorage.getItem("token") || "";
 
             // Call both APIs in parallel
-            const [productsRes, messagesRes] = await Promise.all([
+            const [productsRes, ordersRes, messagesRes] = await Promise.all([
                 axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                }),
+                axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/admin/get`, {
                     headers: { Authorization: `Bearer ${token}` },
                 }),
                 axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/`, {
@@ -30,10 +34,12 @@ export default function AdminDashboard() {
             // Update state with counts
             setProductsCount(productsRes.data.length);
             setMessagesCount(messagesRes.data.length);
+            setOrdersCount(ordersRes.data.order.length);
         } catch (error) {
             console.log("Error fetching details:", error);
             setProductsCount(0);
             setMessagesCount(0);
+            setOrdersCount(0);
         }
     };
 
@@ -77,7 +83,7 @@ export default function AdminDashboard() {
                         Total Orders
                     </h2>
                     <p className="text-2xl sm:text-3xl font-bold text-[#37888F] mt-2">
-                        120
+                        {ordersCount}
                     </p>
                 </div>
 

@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingCart, Menu, X, ChevronDown, Search } from "lucide-react";
+import { ShoppingCart, Menu, X, ChevronDown, Search, User } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false); // mobile sidebar
-    const [collectionsHoverDesktop, setCollectionsHoverDesktop] = useState(false); // desktop dropdown
     const { totalItems } = useCart();
     const [scrolled, setScrolled] = useState(false);
 
@@ -80,6 +79,10 @@ const Header = () => {
                     <button className="text-gray-700 hover:text-black transition">
                         <Search size={24} />
                     </button>
+
+                    <Link href="/user/profile" className="text-gray-700 hover:text-black transition">
+                        <User size={24} />
+                    </Link>
 
                     {/* Cart Icon */}
                     <Link href="/cart" className="relative text-gray-700 hover:text-black transition">

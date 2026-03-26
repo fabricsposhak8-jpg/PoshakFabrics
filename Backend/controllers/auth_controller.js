@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { createUser, getUserByEmail } from "../models/auth_model.js";
+import { createUser, getUserByEmail, getAllUsers } from "../models/auth_model.js";
 
 export const register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -38,3 +38,12 @@ export const login = async (req, res) => {
     }
 };
 
+export const AdminGetAllUsers = async (req, res) => {
+    try {
+        const users = await getAllUsers();
+        res.status(200).json({ msg: "Users fetched successfully", users });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: "Server error" });
+    }
+};

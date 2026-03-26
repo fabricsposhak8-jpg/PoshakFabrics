@@ -2,12 +2,13 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { PackageSearch } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 // Matches columns returned by: SELECT * FROM orders
 interface OrderItem {
     id: number
-    user_id: number
-    product_id: number
+    username: string
+    product_name: string
     payment_method: string
     total_price: number
     shipping_price: number
@@ -26,9 +27,9 @@ const OrdersPage = () => {
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
     const [filterMethod, setFilterMethod] = useState("all")
-
     const API = process.env.NEXT_PUBLIC_BACKEND_URL
 
+    const router = useRouter()
     useEffect(() => {
         const token = localStorage.getItem("token")
         const fetchOrders = async () => {
@@ -37,6 +38,7 @@ const OrdersPage = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 setOrders(response.data)
+                console.log("Orders", response.data)
             } catch (error) {
                 console.error("Error fetching orders:", error)
             } finally {
@@ -53,8 +55,8 @@ const OrdersPage = () => {
     const filtered = Orders.order.filter((item) => {
         const matchesSearch =
             String(item.id ?? "").includes(search) ||
-            String(item.user_id ?? "").includes(search) ||
-            String(item.product_id ?? "").includes(search) ||
+            String(item.username ?? "").includes(search) ||
+            String(item.product_name ?? "").includes(search) ||
             (item.payment_method ?? "").toLowerCase().includes(search.toLowerCase())
         const matchesMethod = filterMethod === "all" || item.payment_method === filterMethod
         return matchesSearch && matchesMethod
@@ -121,8 +123,8 @@ const OrdersPage = () => {
                         <thead className="bg-gray-100">
                             <tr className="text-left">
                                 <th className="p-3 text-gray-700">Order ID</th>
-                                <th className="p-3 text-gray-700">User ID</th>
-                                <th className="p-3 text-gray-700">Product ID</th>
+                                <th className="p-3 text-gray-700">Customer Name</th>
+                                <th className="p-3 text-gray-700">Product Name</th>
                                 <th className="p-3 text-gray-700">Payment Method</th>
                                 <th className="p-3 text-gray-700">Total Price</th>
                                 <th className="p-3 text-gray-700">Shipping</th>
@@ -133,10 +135,12 @@ const OrdersPage = () => {
 
                         <tbody>
                             {filtered.map((item) => (
-                                <tr key={item.id} className="border-t hover:bg-gray-50">
+                                <tr
+                                    onClick={() => router.push(`/Admin/orders/${item.id}`)}
+                                    key={item.id} className="border-t hover:bg-gray-50 cursor-pointer">
                                     <td className="p-3 font-medium text-gray-800">#{item.id}</td>
-                                    <td className="p-3 text-gray-600">{item.user_id}</td>
-                                    <td className="p-3 text-gray-600">{item.product_id}</td>
+                                    <td className="p-3 text-gray-600">{item.username}</td>
+                                    <td className="p-3 text-gray-600">{item.product_name}</td>
                                     <td className="p-3">
                                         <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full capitalize">
                                             {item.payment_method}
@@ -187,6 +191,9 @@ const OrdersPage = () => {
                 )}
             </div>
         </div>
+
+
+
     )
 }
 

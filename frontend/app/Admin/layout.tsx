@@ -2,14 +2,21 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useUser } from "../context/page";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
-    const { logout } = useUser();
+    const { user, logout } = useUser();
 
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        if (user && user.role !== "admin") {
+            router.push("/");
+        }
+    }, [user]);
+
 
     const handleLogout = () => {
         logout();
@@ -25,6 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ];
 
     return (
+
         <div className="flex h-screen bg-gray-50">
             {/* Mobile Overlay */}
             {isOpen && (

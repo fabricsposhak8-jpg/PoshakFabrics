@@ -36,7 +36,17 @@ export const AddOrder = async (user_id, product_id, payment_method, total_price,
 export const GetOrder = async (user_id) => {
     try {
         const query = `
-        SELECT * FROM orders WHERE user_id = $1;
+      SELECT 
+                orders.*,
+                users.username,
+                users.email,
+                products.name    AS product_name,
+                products.price   AS product_price,
+                products.images   AS product_image
+            FROM orders
+            JOIN users    ON orders.user_id    = users.id
+            JOIN products ON orders.product_id = products.id
+            WHERE orders.user_id = $1;
         `;
         const values = [user_id];
         const result = await pool.query(query, values);
@@ -49,7 +59,11 @@ export const GetOrder = async (user_id) => {
 export const AdminGetOrder = async () => {
     try {
         const query = `
-        SELECT * FROM orders;
+       SELECT orders.*,users.username,users.email,products.name AS product_name, products.price AS product_price,products.images AS product_image
+       FROM orders
+       JOIN users ON orders.user_id = users.id
+       JOIN products ON orders.product_id = products.id
+       ORDER BY orders.created_at DESC;
         `;
         const result = await pool.query(query);
         return result.rows;
@@ -57,3 +71,21 @@ export const AdminGetOrder = async () => {
         console.log(error)
     }
 }
+
+export const AdminGetSpecificOrder = async (id) => {
+    try {
+        const query = `
+       SELECT orders.*,users.username,users.email,products.name AS product_name, products.price AS product_price,products.images AS product_image
+       FROM orders
+       JOIN users ON orders.user_id = users.id
+       JOIN products ON orders.product_id = products.id
+       WHERE orders.id = $1;
+        `;
+        const values = [id];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    } catch (error) {
+        console.log(error)
+    }
+}
+

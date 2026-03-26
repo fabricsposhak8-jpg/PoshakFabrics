@@ -18,3 +18,8 @@ export const getUserByEmail = async (email) => {
     const result = await pool.query(querry, [email]);
     return result.rows[0];
 }
+export const getAllUsers = async () => {
+    const querry = `SELECT id, username, email, role, created_at FROM users where role='user' ORDER BY created_at DESC`;
+    const result = await pool.query(querry);
+    return result.rows;
+}
