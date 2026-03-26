@@ -36,7 +36,6 @@ const authHeader = () => ({
 export default function CartProvider({ children }: { children: React.ReactNode }) {
     const [cart, setCart] = useState<CartItem[]>([]);
 
-    console.log("Cart", cart);
     // Load cart from API on mount
     useEffect(() => {
         const fetchCart = async () => {

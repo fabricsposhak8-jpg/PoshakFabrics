@@ -129,6 +129,7 @@ export default function ClothesPage({ params }: PageProps) {
                                             : `${product.price} ${product.currency}`}
                                 </p>
 
+
                                 <p className="text-gray-600 mb-1">Category: {product.category}</p>
                                 <p className="text-gray-600 mb-2">Type: {product.type}</p>
                             </div>

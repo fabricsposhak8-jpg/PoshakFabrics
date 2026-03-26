@@ -139,14 +139,14 @@ export default function CartPage() {
                             </div>
                             <div className="flex justify-between">
                                 <span>Shipping</span>
-                                <span className="text-green-600 font-medium">To be discussed</span>
+                                <span className="text-green-600 font-medium">PKR 250</span>
                             </div>
                             <div className="border-t border-gray-100 pt-3 flex justify-between font-bold text-gray-900 text-base">
                                 <span>Estimated Total</span>
                                 <span className="text-[#B9974F]">
                                     {cart[0]?.currency === "PKR"
-                                        ? `Rs. ${totalPrice.toLocaleString()}`
-                                        : `$${totalPrice.toFixed(2)}`}
+                                        ? `Rs. ${(totalPrice + 250).toLocaleString()}`
+                                        : `$${(totalPrice + 250).toFixed(2)}`}
                                 </span>
                             </div>
                         </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState, useEffect } from "react"
 
 
 type User = {
@@ -24,12 +24,32 @@ export default function UserProvider({ children }: { children: React.ReactNode }
 
     const [user, setUser] = useState<User | null>(null)
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                try {
+                    setUser(JSON.parse(storedUser));
+                } catch (e) {
+                    console.error("Failed to parse user from local storage");
+                }
+            }
+        }
+    }, []);
+
     const login = (user: User) => {
         setUser(user)
+        if (typeof window !== "undefined") {
+            localStorage.setItem("user", JSON.stringify(user));
+        }
     }
 
     const logout = () => {
         setUser(null)
+        if (typeof window !== "undefined") {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+        }
     }
 
     return (

@@ -239,7 +239,8 @@ const UserProductView = () => {
                             </div>
                             <h1 className="text-3xl font-bold text-gray-900 leading-snug mt-2">{product.name}</h1>
                             <p className="text-2xl font-bold text-[#B9974F] mt-2">
-                                {Number(product.price).toLocaleString()} <span className="text-base font-medium text-gray-400">{product.currency}</span>
+                                {Number(product.after_discou).toLocaleString()} <span className="text-base font-medium text-gray-400">{product.currency}</span>
+
                             </p>
                         </div>
 

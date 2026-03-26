@@ -5,13 +5,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart, Menu, X, ChevronDown, Search, User } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
+import { useUser } from "@/app/context/page";
 
 const Header = () => {
+
     const [isOpen, setIsOpen] = useState(false); // mobile sidebar
     const { totalItems } = useCart();
     const [scrolled, setScrolled] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { logout } = useUser();
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            setIsLoggedIn(true);
+        }
         const handleScroll = () => setScrolled(window.scrollY > 50);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
@@ -94,10 +102,23 @@ const Header = () => {
                         )}
                     </Link>
 
-                    {/* Login Button */}
-                    <Link href="/login" className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
-                        Login
-                    </Link>
+                    {isLoggedIn ? (
+                        <button
+                            onClick={() => { logout(); setIsLoggedIn(false) }}
+                            className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition"
+                        >
+                            Logout
+                        </button>
+                    ) : (
+                        <Link
+                            href="/login"
+                            className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition"
+                        >
+                            Login
+                        </Link>
+
+                    )}
+
                 </div>
 
                 {/* Mobile Header */}
@@ -129,6 +150,9 @@ const Header = () => {
                         <button className="text-gray-700 focus:outline-none">
                             <Search size={24} />
                         </button>
+                        <Link href="/user/profile" className="text-gray-700 hover:text-black transition">
+                            <User size={24} />
+                        </Link>
 
                         {/* Cart Icon */}
                         <Link href="/cart" className="relative text-gray-700">
@@ -150,9 +174,18 @@ const Header = () => {
                         <Link href="/#contact" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Contact</Link>
                         <Link href="/user/orders" onClick={() => setIsOpen(false)} className="text-[#B9974F] hover:text-[#a0833e] font-medium text-lg">My Orders</Link>
                         <hr className="border-gray-200 my-2" />
-                        <Link href="/login" onClick={() => setIsOpen(false)} className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium">
-                            Login
-                        </Link>
+                        {isLoggedIn ? (
+                            <Link href="/" onClick={() => {
+                                logout();
+                                setIsOpen(false);
+                            }} className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium">
+                                Logout
+                            </Link>
+                        ) : (
+                            <Link href="/login" onClick={() => setIsOpen(false)} className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium">
+                                Login
+                            </Link>
+                        )}
                     </div>
                 )}
             </div>

@@ -10,7 +10,6 @@ export default function CollectionsPreview() {
     const [loading, setLoading] = useState(true);
     const [touchedProducts, setTouchedProducts] = useState<number[]>([]);
 
-    console.log(touchedProducts);
     const handlecollection = async (type: string) => {
         setActiveType(type);
         setLoading(true);
@@ -39,11 +38,11 @@ export default function CollectionsPreview() {
     }, []);
 
     return (
-        <section className="py-16 px-4">
+        <section className="py-16 px-4 bg-gray-50">
             <div className="max-w-5xl mx-auto">
 
                 {/* Heading */}
-                <div className="text-center mb-10">
+                <div className="text-center mb-12">
                     <span className="inline-block text-[#B9974F] text-sm font-semibold tracking-widest uppercase mb-2">
                         Curated For You
                     </span>
@@ -61,8 +60,8 @@ export default function CollectionsPreview() {
                                 key={type}
                                 onClick={() => handlecollection(type)}
                                 className={`px-7 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 capitalize ${activeType === type
-                                    ? "bg-[#B9974F] text-white shadow-md scale-105"
-                                    : "text-gray-600 hover:text-gray-900"
+                                        ? "bg-[#B9974F] text-white shadow-md scale-105"
+                                        : "text-gray-600 hover:text-gray-900"
                                     }`}
                             >
                                 {type}
@@ -73,13 +72,13 @@ export default function CollectionsPreview() {
 
                 {/* Product Grid */}
                 {loading ? (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="rounded-2xl bg-gray-100 animate-pulse h-72" />
+                            <div key={i} className="rounded-2xl bg-gray-200 animate-pulse h-72" />
                         ))}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                         {products.map((product: any) => (
                             <div
                                 key={product.id}
@@ -87,39 +86,64 @@ export default function CollectionsPreview() {
                                     const id = Number(product.id);
                                     setTouchedProducts((prev) =>
                                         prev.includes(id)
-                                            ? prev.filter((pid) => pid !== id) // remove if already touched (hide)
-                                            : [...prev, id] // add if not touched (show)
+                                            ? prev.filter((pid) => pid !== id)
+                                            : [...prev, id]
                                     );
                                 }}
-                                className={`group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-400 flex flex-col border border-gray-100`}
+                                className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col border border-gray-100 cursor-pointer"
                             >
                                 {/* Image */}
-                                <div className="relative w-full h-52 overflow-hidden">
+                                <div className="relative w-full h-56 overflow-hidden rounded-t-2xl">
                                     <img
                                         src={product.images?.[0]?.url || "/placeholder.png"}
                                         alt={product.name}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />
-                                    {/* Dark overlay on hover */}
                                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
 
                                     {/* Floating price tag */}
-                                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1 shadow-sm">
-                                        <Tag size={11} className="text-[#B9974F]" />
-                                        <span className="text-xs font-semibold text-gray-800">
-                                            {product.currency === "PKR"
-                                                ? `Rs.${product.price}`
-                                                : product.currency === "USD"
-                                                    ? `$${product.price}`
-                                                    : `${product.price} ${product.currency}`}
-                                        </span>
+                                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-xl px-3 py-1 flex flex-col gap-1 shadow-sm text-xs">
+                                        <div className="flex items-center gap-1">
+                                            <Tag size={12} className="text-[#B9974F]" />
+                                            {product.discount_perc > 0 ? (
+                                                <div className="flex flex-col">
+                                                    <span className="text-gray-400 line-through">
+                                                        {product.currency === "PKR"
+                                                            ? `Rs.${product.price}`
+                                                            : product.currency === "USD"
+                                                                ? `$${product.price}`
+                                                                : `${product.price} ${product.currency}`}
+                                                    </span>
+                                                    <span className="font-semibold text-gray-800">
+                                                        {product.currency === "PKR"
+                                                            ? `Rs.${product.after_discou}`
+                                                            : product.currency === "USD"
+                                                                ? `$${product.after_discou}`
+                                                                : `${product.after_discou} ${product.currency}`}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span className="font-semibold text-gray-800">
+                                                    {product.currency === "PKR"
+                                                        ? `Rs.${product.price}`
+                                                        : product.currency === "USD"
+                                                            ? `$${product.price}`
+                                                            : `${product.price} ${product.currency}`}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {product.discount_perc > 0 && (
+                                            <span className="text-[10px] bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 rounded-full mt-1">
+                                                {product.discount_perc}% Off
+                                            </span>
+                                        )}
                                     </div>
 
                                     {/* Hover CTA overlay */}
                                     <div
                                         className={`absolute inset-x-0 bottom-0 transition-transform duration-300 p-3 ${touchedProducts.includes(Number(product.id))
-                                            ? "translate-y-0"        // always show if touched
-                                            : "translate-y-full group-hover:translate-y-0" // slide up on hover if not touched
+                                                ? "translate-y-0"
+                                                : "translate-y-full group-hover:translate-y-0"
                                             }`}
                                     >
                                         <Link
@@ -133,16 +157,20 @@ export default function CollectionsPreview() {
                                 </div>
 
                                 {/* Info */}
-                                <div className="p-3 flex-1 flex flex-col">
-                                    <h3 className="font-bold text-sm text-gray-800 truncate">{product.name}</h3>
-                                    <p className="text-gray-400 text-xs mt-0.5 capitalize">{product.category}</p>
+                                <div className="p-4 flex-1 flex flex-col">
+                                    <h3 className="font-semibold text-sm text-gray-800 truncate">{product.name}</h3>
+                                    <p className="text-gray-500 text-xs mt-1 capitalize">{product.category}</p>
 
                                     {/* Stock badge */}
-                                    <div className="mt-2">
+                                    <div className="mt-3">
                                         {product.stock > 0 ? (
-                                            <span className="text-[10px] bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 rounded-full">In Stock</span>
+                                            <span className="text-[10px] bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 rounded-full">
+                                                In Stock
+                                            </span>
                                         ) : (
-                                            <span className="text-[10px] bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full">Out of Stock</span>
+                                            <span className="text-[10px] bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full">
+                                                Out of Stock
+                                            </span>
                                         )}
                                     </div>
                                 </div>

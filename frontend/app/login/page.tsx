@@ -8,14 +8,11 @@ import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
     const router = useRouter();
-
-    const { login } = useUser()
-
+    const { login } = useUser();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false); // toggle state
-
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -39,15 +36,11 @@ export default function LoginPage() {
                 role: data.user.role,
             });
 
-            console.log(data.user.role);
             if (data.user.role === "admin") {
                 router.push("/Admin");
+            } else {
+                router.push("/");
             }
-            else {
-                router.push("/")
-            }
-
-
         } catch (err: any) {
             setError(err.response?.data?.message || "Login failed");
         } finally {
@@ -56,61 +49,94 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-            <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
-                <h2 className="text-3xl font-bold text-center mb-6">
-                    Login to Poshak Fabrics
-                </h2>
+        <div className="min-h-screen flex">
 
-                {error && (
-                    <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
-                )}
-
-                <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                        <label className="block mb-1 font-medium">Email</label>
-                        <input
-                            type="email"
-                            required
-                            className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div className="relative">
-                        <label className="block mb-1 font-medium">Password</label>
-                        <input
-                            type={showPassword ? "text" : "password"} // toggle type
-                            required
-                            className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-400 outline-none"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        {/* Eye icon button */}
-                        <button
-                            type="button"
-                            className="absolute right-3 top-9 text-gray-500"
-                            onClick={() => setShowPassword(!showPassword)}
-                        >
-                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                        </button>
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-yellow-500 text-black font-semibold py-2 rounded-lg hover:bg-yellow-400 transition"
-                    >
-                        {loading ? "Logging in..." : "Login"}
-                    </button>
-                </form>
-
-                <p className="text-center text-sm mt-4">
-                    Don’t have an account?{" "}
-                    <a href="/register" className="text-yellow-600 font-semibold hover:underline">
-                        Register
-                    </a>
+            {/* LEFT SIDE (Branding / Image Section) */}
+            <div className="hidden md:flex w-1/2 bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 text-black flex-col justify-center items-center p-10">
+                <h1 className="text-5xl font-bold mb-4">Poshak Fabrics</h1>
+                <p className="text-lg text-center max-w-md">
+                    Premium clothing experience with modern fashion and elegant designs.
                 </p>
+            </div>
+
+            {/* RIGHT SIDE (Login Form) */}
+            <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-100 px-4">
+                <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+
+                    <h2 className="text-3xl font-bold text-center mb-2">
+                        Welcome Back 👋
+                    </h2>
+                    <p className="text-center text-gray-500 mb-6 text-sm">
+                        Login to continue
+                    </p>
+
+                    {error && (
+                        <p className="text-red-500 text-sm mb-4 text-center">
+                            {error}
+                        </p>
+                    )}
+
+                    <form onSubmit={handleLogin} className="space-y-5">
+
+                        {/* Email */}
+                        <div>
+                            <label className="block mb-1 text-sm font-medium">
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                required
+                                placeholder="Enter your email"
+                                className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-yellow-400 outline-none"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+
+                        {/* Password */}
+                        <div className="relative">
+                            <label className="block mb-1 text-sm font-medium">
+                                Password
+                            </label>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                required
+                                placeholder="Enter your password"
+                                className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-yellow-400 outline-none"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+
+                            <button
+                                type="button"
+                                className="absolute right-3 top-9 text-gray-500"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
+                        </div>
+
+                        {/* Button */}
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold py-2 rounded-lg hover:scale-105 transition duration-200"
+                        >
+                            {loading ? "Logging in..." : "Login"}
+                        </button>
+                    </form>
+
+                    {/* Footer */}
+                    <p className="text-center text-sm mt-6">
+                        Don’t have an account?{" "}
+                        <a
+                            href="/register"
+                            className="text-yellow-600 font-semibold hover:underline"
+                        >
+                            Register
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
     );
