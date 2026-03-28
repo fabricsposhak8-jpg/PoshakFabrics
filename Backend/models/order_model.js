@@ -89,3 +89,38 @@ export const AdminGetSpecificOrder = async (id) => {
     }
 }
 
+
+export const DeleteSpecificOrder = async (id) => {
+    try {
+        const query = `
+       DELETE FROM orders
+       WHERE id = $1;
+        `;
+        const values = [id];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+export const SpecificUserOrder = async (id) => {
+    console.log("Order ID", id);
+    try {
+        const query = `
+       SELECT orders.*,users.username,users.email,products.name AS product_name, products.price AS product_price,products.images AS product_image
+       FROM orders
+       JOIN users ON orders.user_id = users.id
+       JOIN products ON orders.product_id = products.id
+       WHERE orders.id = $1;
+        `;
+        const values = [id];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+

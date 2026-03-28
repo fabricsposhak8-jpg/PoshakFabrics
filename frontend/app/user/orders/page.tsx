@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
     ShoppingBag, Package, CreditCard, Truck, Clock,
     ChevronRight, Loader2, AlertCircle, ArrowLeft, Receipt
@@ -43,6 +44,7 @@ function PaymentBadge({ method }: { method: string }) {
 }
 
 export default function OrdersPage() {
+    const router = useRouter();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -141,7 +143,8 @@ export default function OrdersPage() {
                             .map((order) => (
                                 <div
                                     key={order.id}
-                                    className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+                                    onClick={() => router.push(`/user/orders/${order.id}`)}
+                                    className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
                                 >
                                     {/* Top bar */}
                                     <div className="flex items-center justify-between px-5 py-3 bg-gray-50 border-b border-gray-100">
@@ -192,6 +195,7 @@ export default function OrdersPage() {
                                             </p>
                                             <Link
                                                 href={`/user/collections/all/${order.product_id}`}
+                                                onClick={(e) => e.stopPropagation()}
                                                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#B9974F] hover:text-[#a0833e] transition-colors group"
                                             >
                                                 View Product

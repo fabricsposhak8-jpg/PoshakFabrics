@@ -1,4 +1,4 @@
-import { createOrder, getOrder, adminGetOrder, adminGetSpecificOrder } from "../controllers/Order_controller.js";
+import { createOrder, getOrder, adminGetOrder, adminGetSpecificOrder, deleteSpecificOrder, specificUserOrder } from "../controllers/Order_controller.js";
 import { authMiddleware } from "../middlewares/auth_middleware.js";
 import { admin_Middleware } from "../middlewares/admin_middleware.js";
 import express from "express";
@@ -10,5 +10,7 @@ router.post("/add/:id", authMiddleware, upload.single("payment_receipt"), create
 router.get("/get", authMiddleware, getOrder);
 router.get("/admin/get", authMiddleware, admin_Middleware, adminGetOrder);
 router.get("/admin/get/:id", authMiddleware, admin_Middleware, adminGetSpecificOrder);
+router.delete("/delete/:id", authMiddleware, deleteSpecificOrder);
+router.get("/user/get/:id", authMiddleware, specificUserOrder);
 
 export default router;

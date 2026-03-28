@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useState, useEffect } from "react"
 
 
@@ -21,7 +22,7 @@ const UserContext = createContext<Context | null>(null)
 
 
 export default function UserProvider({ children }: { children: React.ReactNode }) {
-
+    const router = useRouter();
     const [user, setUser] = useState<User | null>(null)
 
     useEffect(() => {
@@ -50,6 +51,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
             localStorage.removeItem("token");
             localStorage.removeItem("user");
         }
+        router.push("/");
     }
 
     return (
