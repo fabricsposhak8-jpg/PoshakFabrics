@@ -7,7 +7,7 @@ import {
     ShoppingBag, CreditCard, Wallet, Truck, CheckCircle2,
     ArrowLeft, MapPin, Tag, Package, AlertCircle, Loader2,
     Upload, Copy, CheckCheck, Phone, User, Building2, Hash, Home,
-    ChevronRight,
+    ChevronRight, XCircle, RefreshCw,
 } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -97,6 +97,7 @@ export default function CheckoutPage() {
     const [loading, setLoading] = useState(false);
     const [fetchLoading, setFetchLoading] = useState(true);
     const [success, setSuccess] = useState(false);
+    const [orderFailed, setOrderFailed] = useState(false);
     const [error, setError] = useState("");
     const [copied, setCopied] = useState(false);
     const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
@@ -161,6 +162,7 @@ export default function CheckoutPage() {
 
         setLoading(true);
         setError("");
+        setOrderFailed(false);
 
         try {
             const unitPrice = Number(product.price);
@@ -184,7 +186,9 @@ export default function CheckoutPage() {
 
             setSuccess(true);
         } catch (err: any) {
-            setError(err?.response?.data?.msg || "Something went wrong. Please try again.");
+            const msg = err?.response?.data?.msg || "Something went wrong. Please try again.";
+            setError(msg);
+            setOrderFailed(true);
         } finally {
             setLoading(false);
         }
@@ -234,6 +238,48 @@ export default function CheckoutPage() {
                         className="flex-1 border-2 border-[#B9974F] text-[#B9974F] px-5 py-3 rounded-xl text-sm font-semibold hover:bg-[#B9974F] hover:text-white transition-all text-center"
                     >
                         Continue Shopping
+                    </Link>
+                </div>
+            </div>
+        </div>
+    );
+
+    /* ── Order Failed ── */
+    if (orderFailed) return (
+        <div className="min-h-screen bg-gradient-to-br from-[#FAF9F7] to-[#F5EDED] flex items-center justify-center px-4">
+            <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-10 max-w-md w-full text-center">
+                <div className="relative inline-flex mb-6">
+                    <div className="absolute inset-0 bg-red-400/20 rounded-full blur-xl scale-150" />
+                    <div className="relative bg-gradient-to-br from-red-400 to-red-600 rounded-full p-5 shadow-lg">
+                        <XCircle className="h-14 w-14 text-white" />
+                    </div>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">Order Not Placed 😞</h1>
+                <p className="text-gray-500 text-sm mb-1">
+                    We couldn't place your order for{" "}
+                    <span className="font-semibold text-gray-800">{product?.name}</span>.
+                </p>
+                <p className="text-red-500 text-xs font-medium bg-red-50 border border-red-100 rounded-xl px-4 py-2.5 mt-3 mb-6 leading-relaxed">
+                    {error || "Something went wrong. Please try again."}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                        onClick={() => { setOrderFailed(false); setError(""); }}
+                        className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white px-5 py-3 rounded-xl text-sm font-semibold hover:bg-[#B9974F] transition-colors"
+                    >
+                        <RefreshCw className="h-4 w-4" />
+                        Try Again
+                    </button>
+                    <Link
+                        href="/user/collections"
+                        className="flex-1 border-2 border-gray-200 text-gray-600 px-5 py-3 rounded-xl text-sm font-semibold hover:bg-gray-50 transition-all text-center"
+                    >
+                        Back to Shop
+                    </Link>
+                </div>
+                <div className="mt-5">
+                    <Link href="/#contact" className="text-xs text-[#B9974F] hover:underline font-medium">
+                        Need help? Contact support →
                     </Link>
                 </div>
             </div>
@@ -487,10 +533,13 @@ export default function CheckoutPage() {
                         </div>
 
                         {/* Error */}
-                        {error && (
-                            <div className="flex items-start gap-3 bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3.5 rounded-xl">
-                                <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                <span>{error}</span>
+                        {error && !orderFailed && (
+                            <div className="flex items-start gap-3 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-4 rounded-xl shadow-sm">
+                                <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5 text-red-500" />
+                                <div className="flex-1">
+                                    <p className="font-semibold text-red-700 mb-0.5">Unable to place order</p>
+                                    <p className="text-red-500 text-xs leading-relaxed">{error}</p>
+                                </div>
                             </div>
                         )}
                     </div>
