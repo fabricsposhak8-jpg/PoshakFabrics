@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
-import { ArrowLeft, User, Package, CreditCard, Truck, CheckCircle2, Clock, XCircle, AlertCircle, ExternalLink, MapPin } from 'lucide-react'
+import { ArrowLeft, User, Package, CreditCard, Truck, CheckCircle2, Clock, XCircle, AlertCircle, ExternalLink, MapPin, Save, X } from 'lucide-react'
 
 const OrderDetailPage = () => {
     const { id } = useParams()
@@ -11,6 +11,17 @@ const OrderDetailPage = () => {
     const [order, setOrder] = useState<any>(null)
     const [loading, setLoading] = useState(true)
     const API = process.env.NEXT_PUBLIC_BACKEND_URL
+
+    // ✅ Per-section update mode: "payment" | "order" | "delivery" | null
+    const [updatingSection, setUpdatingSection] = useState<"payment" | "order" | "delivery" | null>(null)
+    const [isSaving, setIsSaving] = useState(false)
+
+    // ✅ is_delivered as string to match <select> value
+    const [updatedStatus, setUpdatedStatus] = useState({
+        order_status: "",
+        payment_status: "",
+        is_delivered: "false",
+    })
 
     useEffect(() => {
         const token = localStorage.getItem("token")
@@ -28,6 +39,40 @@ const OrderDetailPage = () => {
         }
         if (id) fetchOrder()
     }, [id])
+
+    // Seed form with current order values when opening a section
+    const openSection = (section: "payment" | "order" | "delivery") => {
+        setUpdatedStatus({
+            order_status: order.order_status ?? "",
+            payment_status: order.payment_status ?? "",
+            is_delivered: order.is_delivered ? "true" : "false",
+        })
+        setUpdatingSection(section)
+    }
+
+    const cancelUpdate = () => setUpdatingSection(null)
+
+    const handleUpdate = async (field: "payment" | "order" | "delivery") => {
+        setIsSaving(true)
+        try {
+            const token = localStorage.getItem("token")
+            const payload: any = { id }
+            if (field === "payment") payload.payment_status = updatedStatus.payment_status
+            if (field === "order") payload.order_status = updatedStatus.order_status
+            if (field === "delivery") payload.is_delivered = updatedStatus.is_delivered === "true"
+
+            const response = await axios.put(`${API}/api/order/update`, payload, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            // Update local state so UI reflects changes immediately
+            setOrder((prev: any) => ({ ...prev, ...response.data.order }))
+            setUpdatingSection(null)
+        } catch (error) {
+            console.error("Update failed:", error)
+        } finally {
+            setIsSaving(false)
+        }
+    }
 
     const fmtDate = (iso: string | null) =>
         iso ? new Date(iso).toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" }) : "—"
@@ -51,11 +96,7 @@ const OrderDetailPage = () => {
 
     if (loading) return (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f9fafb" }}>
-            <div style={{
-                width: 40, height: 40, border: "3px solid #f0e6d3",
-                borderTopColor: "#d4862a", borderRadius: "50%",
-                animation: "spin 0.8s linear infinite"
-            }} />
+            <div style={{ width: 40, height: 40, border: "3px solid #f0e6d3", borderTopColor: "#d4862a", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
             <style>{`@keyframes spin { to { transform:rotate(360deg) } }`}</style>
         </div>
     )
@@ -80,7 +121,7 @@ const OrderDetailPage = () => {
 
     const S = {
         root: { minHeight: "100vh", background: "#f9fafb", padding: "28px 24px", fontFamily: "'Inter',sans-serif" } as React.CSSProperties,
-        backBtn: { display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: "#6b7280", fontSize: "0.84rem", fontWeight: 500, marginBottom: 20, padding: "4px 0", transition: "color 0.2s" } as React.CSSProperties,
+        backBtn: { display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: "#6b7280", fontSize: "0.84rem", fontWeight: 500, marginBottom: 20, padding: "4px 0" } as React.CSSProperties,
         heading: { fontSize: "1.55rem", fontWeight: 700, color: "#111827", marginBottom: 2 } as React.CSSProperties,
         sub: { fontSize: "0.82rem", color: "#9ca3af", marginBottom: 24 } as React.CSSProperties,
         grid2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 } as React.CSSProperties,
@@ -95,6 +136,9 @@ const OrderDetailPage = () => {
         val: { fontSize: "0.88rem", color: "#111827", fontWeight: 600, textAlign: "right" as const, maxWidth: "60%", wordBreak: "break-word" as const },
         badge: (cfg: { bg: string; color: string }) => ({ display: "inline-flex", alignItems: "center", gap: 4, fontSize: "0.74rem", fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: cfg.bg, color: cfg.color }) as React.CSSProperties,
         totalBand: { background: "linear-gradient(135deg,#1a0a00,#3a1c00)", borderRadius: 10, padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 } as React.CSSProperties,
+        actionBtn: { display: "inline-flex", alignItems: "center", gap: 6, background: "linear-gradient(135deg,#d4862a,#f0b866)", color: "#1a0800", fontSize: "0.82rem", fontWeight: 700, padding: "8px 16px", borderRadius: 8, border: "none", cursor: "pointer", marginTop: 12 } as React.CSSProperties,
+        cancelBtn: { display: "inline-flex", alignItems: "center", gap: 6, background: "#f3f4f6", color: "#6b7280", fontSize: "0.82rem", fontWeight: 700, padding: "8px 16px", borderRadius: 8, border: "none", cursor: "pointer", marginTop: 12, marginLeft: 8 } as React.CSSProperties,
+        select: { border: "1px solid #e5e7eb", borderRadius: 8, padding: "5px 10px", fontSize: "0.82rem", color: "#111827", background: "#fff", cursor: "pointer", outline: "none" } as React.CSSProperties,
         receiptBtn: { display: "inline-flex", alignItems: "center", gap: 6, background: "linear-gradient(135deg,#d4862a,#f0b866)", color: "#1a0800", fontSize: "0.82rem", fontWeight: 700, padding: "8px 16px", borderRadius: 8, textDecoration: "none", marginTop: 12 } as React.CSSProperties,
     }
 
@@ -129,8 +173,6 @@ const OrderDetailPage = () => {
                                 <p style={{ fontSize: "0.84rem", color: "#6b7280" }}>Product ID: #{order.product_id}</p>
                             </div>
                         </div>
-
-                        {/* Total band */}
                         <div style={S.totalBand}>
                             <div>
                                 <p style={{ fontSize: "0.78rem", color: "rgba(240,184,102,0.7)" }}>Subtotal</p>
@@ -178,14 +220,30 @@ const OrderDetailPage = () => {
                             <span style={S.label}>Method</span>
                             <span style={{ ...S.val, textTransform: "capitalize" }}>{order.payment_method}</span>
                         </div>
+
+                        {/* ✅ Only this card's select shows when updatingSection === "payment" */}
                         <div style={S.row}>
                             <span style={S.label}>Status</span>
-                            <span style={S.badge(pStatus)}>{order.payment_status}</span>
+                            {updatingSection === "payment" ? (
+                                <select
+                                    style={S.select}
+                                    value={updatedStatus.payment_status}
+                                    onChange={(e) => setUpdatedStatus({ ...updatedStatus, payment_status: e.target.value })}
+                                >
+                                    <option value="Pending">Pending</option>
+                                    <option value="Paid">Paid</option>
+                                    <option value="Failed">Failed</option>
+                                </select>
+                            ) : (
+                                <span style={S.badge(pStatus)}>{order.payment_status}</span>
+                            )}
                         </div>
+
                         <div style={{ ...S.row, borderBottom: "none" }}>
                             <span style={S.label}>Paid At</span>
                             <span style={S.val}>{fmtDate(order.paid_at)}</span>
                         </div>
+
                         {receipt?.url && (
                             <a href={receipt.url} target="_blank" rel="noreferrer" style={S.receiptBtn}>
                                 <ExternalLink size={14} /> View Receipt
@@ -193,6 +251,22 @@ const OrderDetailPage = () => {
                         )}
                         {!receipt?.url && (
                             <p style={{ fontSize: "0.78rem", color: "#d1d5db", marginTop: 10 }}>No receipt uploaded</p>
+                        )}
+
+                        {/* ✅ Save/Cancel when editing, Update button otherwise */}
+                        {updatingSection === "payment" ? (
+                            <div>
+                                <button style={S.actionBtn} onClick={() => handleUpdate("payment")} disabled={isSaving}>
+                                    <Save size={14} /> {isSaving ? "Saving..." : "Save"}
+                                </button>
+                                <button style={S.cancelBtn} onClick={cancelUpdate}>
+                                    <X size={14} /> Cancel
+                                </button>
+                            </div>
+                        ) : (
+                            <button style={S.actionBtn} onClick={() => openSection("payment")}>
+                                Update Payment Status
+                            </button>
                         )}
                     </div>
                 </div>
@@ -208,9 +282,9 @@ const OrderDetailPage = () => {
                     <div style={{ ...S.cardBody, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
                         {[
                             ["Address Line", order.address_line || "—"],
-                            ["City",         order.city        || "—"],
-                            ["Country",      order.country     || "—"],
-                            ["Postal Code",  order.postal_code || "—"],
+                            ["City", order.city || "—"],
+                            ["Country", order.country || "—"],
+                            ["Postal Code", order.postal_code || "—"],
                         ].map(([lbl, val], i, arr) => (
                             <div key={lbl} style={{ ...S.row, borderBottom: i >= arr.length - 2 ? "none" : "1px solid #f9fafb" }}>
                                 <span style={S.label}>{lbl}</span>
@@ -230,14 +304,45 @@ const OrderDetailPage = () => {
                         <span style={S.cardTitle}>Order Status</span>
                     </div>
                     <div style={S.cardBody}>
+                        {/* ✅ Only this card's select shows when updatingSection === "order" */}
                         <div style={S.row}>
                             <span style={S.label}>Status</span>
-                            <span style={S.badge(oStatus)}>{oStatus.icon} {order.order_status}</span>
+                            {updatingSection === "order" ? (
+                                <select
+                                    style={S.select}
+                                    value={updatedStatus.order_status}
+                                    onChange={(e) => setUpdatedStatus({ ...updatedStatus, order_status: e.target.value })}
+                                >
+                                    <option value="Pending">Pending</option>
+                                    <option value="Processing">Processing</option>
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Delivered">Delivered</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            ) : (
+                                <span style={S.badge(oStatus)}>{oStatus.icon} {order.order_status}</span>
+                            )}
                         </div>
+
                         <div style={{ ...S.row, borderBottom: "none" }}>
                             <span style={S.label}>Placed</span>
                             <span style={S.val}>{fmtDate(order.created_at)}</span>
                         </div>
+
+                        {updatingSection === "order" ? (
+                            <div>
+                                <button style={S.actionBtn} onClick={() => handleUpdate("order")} disabled={isSaving}>
+                                    <Save size={14} /> {isSaving ? "Saving..." : "Save"}
+                                </button>
+                                <button style={S.cancelBtn} onClick={cancelUpdate}>
+                                    <X size={14} /> Cancel
+                                </button>
+                            </div>
+                        ) : (
+                            <button style={S.actionBtn} onClick={() => openSection("order")}>
+                                Update Order Status
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -248,19 +353,47 @@ const OrderDetailPage = () => {
                         <span style={S.cardTitle}>Delivery</span>
                     </div>
                     <div style={S.cardBody}>
+                        {/* ✅ Only this card's select shows when updatingSection === "delivery" */}
                         <div style={S.row}>
                             <span style={S.label}>Delivered</span>
-                            <span style={order.is_delivered
-                                ? S.badge({ bg: "#f0fdf4", color: "#15803d" })
-                                : S.badge({ bg: "#fff7ed", color: "#c2410c" })
-                            }>
-                                {order.is_delivered ? <><CheckCircle2 size={12} /> Yes</> : <><Clock size={12} /> Pending</>}
-                            </span>
+                            {updatingSection === "delivery" ? (
+                                <select
+                                    style={S.select}
+                                    value={updatedStatus.is_delivered}
+                                    onChange={(e) => setUpdatedStatus({ ...updatedStatus, is_delivered: e.target.value })}
+                                >
+                                    <option value="true">Yes — Delivered</option>
+                                    <option value="false">No — Pending</option>
+                                </select>
+                            ) : (
+                                <span style={order.is_delivered
+                                    ? S.badge({ bg: "#f0fdf4", color: "#15803d" })
+                                    : S.badge({ bg: "#fff7ed", color: "#c2410c" })
+                                }>
+                                    {order.is_delivered ? <><CheckCircle2 size={12} /> Yes</> : <><Clock size={12} /> Pending</>}
+                                </span>
+                            )}
                         </div>
+
                         <div style={{ ...S.row, borderBottom: "none" }}>
                             <span style={S.label}>Delivered At</span>
                             <span style={S.val}>{fmtDate(order.delivered_at)}</span>
                         </div>
+
+                        {updatingSection === "delivery" ? (
+                            <div>
+                                <button style={S.actionBtn} onClick={() => handleUpdate("delivery")} disabled={isSaving}>
+                                    <Save size={14} /> {isSaving ? "Saving..." : "Save"}
+                                </button>
+                                <button style={S.cancelBtn} onClick={cancelUpdate}>
+                                    <X size={14} /> Cancel
+                                </button>
+                            </div>
+                        ) : (
+                            <button style={S.actionBtn} onClick={() => openSection("delivery")}>
+                                Update Delivery Status
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 "use client"
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { PackageSearch } from 'lucide-react'
+import { PackageSearch, Clock, Truck, CheckCircle2, AlertCircle, Ban } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 // Matches columns returned by: SELECT * FROM orders
@@ -12,6 +12,7 @@ interface OrderItem {
     payment_method: string
     total_price: number
     shipping_price: number
+    order_status: string
     payment_receipt: { url: string; cloudinary_id: string } | null
     created_at: string
 }
@@ -21,6 +22,27 @@ interface OrdersResponse {
     msg: string
     order: OrderItem[]
 }
+
+// ── Status Badge (same config as user-facing pages) ──────────────────────────
+const STATUS_CONFIG: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode; label: string }> = {
+    pending:    { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", icon: <Clock size={11} />,         label: "Pending" },
+    processing: { bg: "#EFF6FF", text: "#1E40AF", border: "#BFDBFE", icon: <AlertCircle size={11} />,  label: "Processing" },
+    shipped:    { bg: "#F0F9FF", text: "#0C4A6E", border: "#BAE6FD", icon: <Truck size={11} />,         label: "Shipped" },
+    delivered:  { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0", icon: <CheckCircle2 size={11} />, label: "Delivered" },
+    cancelled:  { bg: "#FFF1F2", text: "#881337", border: "#FECDD3", icon: <Ban size={11} />,           label: "Cancelled" },
+}
+
+function OrderStatusBadge({ status }: { status: string }) {
+    const c = STATUS_CONFIG[status?.toLowerCase()] ?? STATUS_CONFIG["pending"]
+    return (
+        <span style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}` }}
+            className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full capitalize whitespace-nowrap">
+            {c.icon} {c.label}
+        </span>
+    )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 const OrdersPage = () => {
     const [Orders, setOrders] = useState<OrdersResponse>({ msg: "", order: [] })
@@ -128,6 +150,7 @@ const OrdersPage = () => {
                                 <th className="p-3 text-gray-700">Payment Method</th>
                                 <th className="p-3 text-gray-700">Total Price</th>
                                 <th className="p-3 text-gray-700">Shipping</th>
+                                <th className="p-3 text-gray-700">Status</th>
                                 <th className="p-3 text-gray-700">Receipt</th>
                                 <th className="p-3 text-gray-700">Date</th>
                             </tr>
@@ -151,6 +174,9 @@ const OrdersPage = () => {
                                     </td>
                                     <td className="p-3 text-gray-600">
                                         Rs {Number(item.shipping_price).toLocaleString()}
+                                    </td>
+                                    <td className="p-3">
+                                        <OrderStatusBadge status={item.order_status} />
                                     </td>
                                     <td className="p-3">
                                         {item.payment_receipt?.url ? (

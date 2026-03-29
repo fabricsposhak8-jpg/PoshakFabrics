@@ -14,6 +14,7 @@ type User = {
 
 type Context = {
     user: User | null
+    isLoaded: boolean
     login: (user: User) => void
     logout: () => void
 }
@@ -24,6 +25,7 @@ const UserContext = createContext<Context | null>(null)
 export default function UserProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null)
+    const [isLoaded, setIsLoaded] = useState(false)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -36,6 +38,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
                 }
             }
         }
+        setIsLoaded(true); // ✅ mark as ready after localStorage is read
     }, []);
 
     const login = (user: User) => {
@@ -55,7 +58,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
     }
 
     return (
-        <UserContext.Provider value={{ user, login, logout }}>
+        <UserContext.Provider value={{ user, isLoaded, login, logout }}>
             {children}
         </UserContext.Provider>
     )

@@ -6,12 +6,17 @@ import { useUser } from "../app/context/page";
 import { usePathname } from "next/navigation";
 
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
-    const { user } = useUser();
+    const { user, isLoaded } = useUser();
     const isAdmin = user?.role === "admin";
 
     const pathname = usePathname();
-    const hiddenlayout = ["/login", "/register"];
-    const shouldHideLayout = isAdmin || hiddenlayout.includes(pathname);
+    const hiddenRoutes = ["/login", "/register"];
+
+    // ✅ Wait until localStorage is read before deciding to show/hide
+    const shouldHideLayout = isLoaded &&
+        (
+            hiddenRoutes.includes(pathname) || pathname.startsWith("/Admin")
+        );
 
     return (
         <>

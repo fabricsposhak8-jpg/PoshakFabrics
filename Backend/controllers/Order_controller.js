@@ -1,4 +1,4 @@
-import { AddOrder, GetOrder, AdminGetOrder, AdminGetSpecificOrder, DeleteSpecificOrder, SpecificUserOrder } from "../models/order_model.js";
+import { AddOrder, GetOrder, AdminGetOrder, AdminGetSpecificOrder, DeleteSpecificOrder, SpecificUserOrder, UpdateStatus } from "../models/order_model.js";
 
 export const createOrder = async (req, res) => {
     try {
@@ -61,6 +61,17 @@ export const specificUserOrder = async (req, res) => {
     try {
         const order = await SpecificUserOrder(req.params.id);
         res.status(200).json({ msg: "Order fetched successfully", order });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: "Server error" });
+    }
+}
+
+export const AdminUpdateStatus = async (req, res) => {
+    try {
+        const { id, order_status, payment_status, is_delivered } = req.body;
+        const order = await UpdateStatus(id, order_status, payment_status, is_delivered);
+        res.status(200).json({ msg: "Order updated successfully", order });
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: "Server error" });

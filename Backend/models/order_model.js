@@ -106,7 +106,6 @@ export const DeleteSpecificOrder = async (id) => {
 
 
 export const SpecificUserOrder = async (id) => {
-    console.log("Order ID", id);
     try {
         const query = `
        SELECT orders.*,users.username,users.email,products.name AS product_name, products.price AS product_price,products.images AS product_image
@@ -123,4 +122,22 @@ export const SpecificUserOrder = async (id) => {
     }
 }
 
-
+export const UpdateStatus = async (id, order_status, payment_status, is_delivered) => {
+    try {
+        const query = `
+       UPDATE orders 
+       SET 
+       order_status = COALESCE($2, order_status),
+       payment_status = COALESCE($3, payment_status),
+       is_delivered = COALESCE($4, is_delivered),
+       delivered_at = CASE WHEN $4 = true THEN CURRENT_TIMESTAMP ELSE delivered_at END
+       WHERE id = $1
+       RETURNING *;
+        `
+        const values = [id, order_status || null, payment_status || null, is_delivered ?? null];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    } catch (error) {
+        console.log(error)
+    }
+}

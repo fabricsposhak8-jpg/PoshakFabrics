@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
     ShoppingBag, Package, CreditCard, Truck, Clock,
-    ChevronRight, Loader2, AlertCircle, ArrowLeft, Receipt
+    ChevronRight, Loader2, AlertCircle, ArrowLeft, Receipt,
+    CheckCircle2, AlertCircle as AlertCircleIcon, Ban, Circle
 } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -13,20 +14,39 @@ const API = process.env.NEXT_PUBLIC_BACKEND_URL;
 type Order = {
     id: number;
     product_id: number;
+    product_name?: string;
     payment_method: string;
     total_price: string;
     shipping_price: string;
-    status?: string;
+    order_status: string;     // ✅ correct field name from API
+    is_delivered: boolean;    // ✅ used to override status to Delivered
     created_at: string;
 };
 
-const STATUS_STYLES: Record<string, string> = {
-    pending: "bg-yellow-100 text-yellow-700",
-    confirmed: "bg-blue-100 text-blue-700",
-    shipped: "bg-indigo-100 text-indigo-700",
-    delivered: "bg-green-100 text-green-700",
-    cancelled: "bg-red-100 text-red-600",
+// ✅ Same config as detail page — keeps status display in sync
+const ORDER_STATUS_CONFIG: Record<string, {
+    bg: string; text: string; border: string; icon: React.ReactNode; label: string;
+}> = {
+    pending:    { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A",  icon: <Clock className="h-3 w-3" />,          label: "Pending" },
+    processing: { bg: "#EFF6FF", text: "#1E40AF", border: "#BFDBFE",  icon: <AlertCircleIcon className="h-3 w-3" />, label: "Processing" },
+    shipped:    { bg: "#F0F9FF", text: "#0C4A6E", border: "#BAE6FD",  icon: <Truck className="h-3 w-3" />,           label: "Shipped" },
+    delivered:  { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0",  icon: <CheckCircle2 className="h-3 w-3" />,    label: "Delivered" },
+    cancelled:  { bg: "#FFF1F2", text: "#881337", border: "#FECDD3",  icon: <Ban className="h-3 w-3" />,             label: "Cancelled" },
 };
+
+function OrderStatusBadge({ status, isDelivered }: { status: string; isDelivered: boolean }) {
+    // ✅ If is_delivered=true, always show Delivered regardless of order_status
+    const effectiveKey = isDelivered ? "delivered" : status.toLowerCase();
+    const c = ORDER_STATUS_CONFIG[effectiveKey] ?? ORDER_STATUS_CONFIG["pending"];
+    return (
+        <span
+            style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}` }}
+            className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full capitalize"
+        >
+            {c.icon} {c.label}
+        </span>
+    );
+}
 
 function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleDateString("en-PK", {
@@ -153,9 +173,10 @@ export default function OrdersPage() {
                                             <span>{formatDate(order.created_at)}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full capitalize ${STATUS_STYLES[order.status ?? "pending"] ?? STATUS_STYLES["pending"]}`}>
-                                                {order.status ?? "Pending"}
-                                            </span>
+                                            <OrderStatusBadge
+                                                status={order.order_status}
+                                                isDelivered={order.is_delivered}
+                                            />
                                             <span className="text-xs text-gray-300">#{order.id}</span>
                                         </div>
                                     </div>
