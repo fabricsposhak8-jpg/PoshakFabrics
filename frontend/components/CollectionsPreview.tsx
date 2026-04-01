@@ -38,8 +38,8 @@ export default function CollectionsPreview() {
     }, []);
 
     return (
-        <section className="py-16 px-4 bg-gray-50">
-            <div className="max-w-5xl mx-auto">
+        <section className="py-16 px-4">
+            <div id="collections" className="max-w-5xl mx-auto scroll-mt-24">
 
                 {/* Heading */}
                 <div className="text-center mb-12">
@@ -59,9 +59,9 @@ export default function CollectionsPreview() {
                             <button
                                 key={type}
                                 onClick={() => handlecollection(type)}
-                                className={`px-7 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 capitalize ${activeType === type
-                                        ? "bg-[#B9974F] text-white shadow-md scale-105"
-                                        : "text-gray-600 hover:text-gray-900"
+                                className={`px-7 py-2.5 rounded-full cursor-pointer text-sm font-semibold transition-all duration-300 capitalize ${activeType === type
+                                    ? "bg-[#B9974F] text-white shadow-md scale-105"
+                                    : "text-gray-600 hover:text-gray-900"
                                     }`}
                             >
                                 {type}
@@ -76,6 +76,12 @@ export default function CollectionsPreview() {
                         {Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="rounded-2xl bg-gray-200 animate-pulse h-72" />
                         ))}
+                    </div>
+                ) : products.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-2xl shadow-sm border border-gray-100 text-center col-span-full">
+                        <Tag className="w-12 h-12 text-[#B9974F] opacity-50 mb-4" />
+                        <h3 className="text-xl font-medium text-gray-900 mb-2">No products found</h3>
+                        <p className="text-gray-500 text-sm">We currently don't have any {activeType} products available.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -142,8 +148,8 @@ export default function CollectionsPreview() {
                                     {/* Hover CTA overlay */}
                                     <div
                                         className={`absolute inset-x-0 bottom-0 transition-transform duration-300 p-3 ${touchedProducts.includes(Number(product.id))
-                                                ? "translate-y-0"
-                                                : "translate-y-full group-hover:translate-y-0"
+                                            ? "translate-y-0"
+                                            : "translate-y-full group-hover:translate-y-0"
                                             }`}
                                     >
                                         <Link

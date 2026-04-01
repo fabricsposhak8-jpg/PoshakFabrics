@@ -1,6 +1,7 @@
 import ContactUs from "@/components/ContactUs";
 import Slider from "@/components/Slider";
 import CollectionsPreview from "@/components/CollectionsPreview";
+import Link from "next/link";
 
 const Page = () => {
   return (
@@ -23,12 +24,11 @@ const Page = () => {
             Discover premium fabrics that inspire creativity and elegance.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="bg-yellow-500 text-black font-semibold px-6 py-3 rounded-lg hover:bg-yellow-400 transition w-full sm:w-auto">
+            <Link
+              href="#collections"
+              className="bg-[#C19344] cursor-pointer text-black font-semibold px-6 py-3 rounded-lg hover:bg-[#B9974F] transition w-full sm:w-auto">
               Shop Now
-            </button>
-            <button className="bg-transparent border-2 border-white text-white font-semibold px-6 py-3 rounded-lg hover:bg-white hover:text-black transition w-full sm:w-auto">
-              Learn More
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -27,11 +27,11 @@ type Order = {
 const ORDER_STATUS_CONFIG: Record<string, {
     bg: string; text: string; border: string; icon: React.ReactNode; label: string;
 }> = {
-    pending:    { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A",  icon: <Clock className="h-3 w-3" />,          label: "Pending" },
-    processing: { bg: "#EFF6FF", text: "#1E40AF", border: "#BFDBFE",  icon: <AlertCircleIcon className="h-3 w-3" />, label: "Processing" },
-    shipped:    { bg: "#F0F9FF", text: "#0C4A6E", border: "#BAE6FD",  icon: <Truck className="h-3 w-3" />,           label: "Shipped" },
-    delivered:  { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0",  icon: <CheckCircle2 className="h-3 w-3" />,    label: "Delivered" },
-    cancelled:  { bg: "#FFF1F2", text: "#881337", border: "#FECDD3",  icon: <Ban className="h-3 w-3" />,             label: "Cancelled" },
+    pending: { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", icon: <Clock className="h-3 w-3" />, label: "Pending" },
+    processing: { bg: "#EFF6FF", text: "#1E40AF", border: "#BFDBFE", icon: <AlertCircleIcon className="h-3 w-3" />, label: "Processing" },
+    shipped: { bg: "#F0F9FF", text: "#0C4A6E", border: "#BAE6FD", icon: <Truck className="h-3 w-3" />, label: "Shipped" },
+    delivered: { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0", icon: <CheckCircle2 className="h-3 w-3" />, label: "Delivered" },
+    cancelled: { bg: "#FFF1F2", text: "#881337", border: "#FECDD3", icon: <Ban className="h-3 w-3" />, label: "Cancelled" },
 };
 
 function OrderStatusBadge({ status, isDelivered }: { status: string; isDelivered: boolean }) {
@@ -148,7 +148,7 @@ export default function OrdersPage() {
                         <h2 className="text-lg font-bold text-gray-700 mb-1">No orders yet</h2>
                         <p className="text-gray-400 text-sm mb-6">You haven't placed any orders. Start shopping!</p>
                         <Link
-                            href="/user/collections"
+                            href="/#collections"
                             className="inline-flex items-center gap-2 bg-gray-900 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#B9974F] transition-colors"
                         >
                             <ShoppingBag className="h-4 w-4" />

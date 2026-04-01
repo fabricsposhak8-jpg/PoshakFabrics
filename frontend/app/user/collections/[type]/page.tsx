@@ -2,7 +2,7 @@
 import React from "react";
 import axios from "axios";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Tag } from "lucide-react";
 
 interface PageProps {
     params: Promise<{ type: string }>;
@@ -160,7 +160,11 @@ export default function ClothesPage({ params }: PageProps) {
 
             {products.length === 0 &&
                 (lowerType === "stitched" || lowerType === "unstitched") && (
-                    <p className="mt-6 text-gray-500">No products found in this collection.</p>
+                    <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-2xl shadow-sm border border-gray-100 text-center mt-8">
+                        <Tag className="w-12 h-12 text-[#B9974F] opacity-50 mb-4" />
+                        <h3 className="text-xl font-medium text-gray-900 mb-2">No products found</h3>
+                        <p className="text-gray-500 text-sm">We currently don't have any {lowerType} products available.</p>
+                    </div>
                 )}
 
             {lowerType !== "stitched" && lowerType !== "unstitched" && (
