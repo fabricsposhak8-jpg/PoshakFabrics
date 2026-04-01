@@ -234,7 +234,7 @@ export default function CheckoutPage() {
                         My Orders
                     </Link>
                     <Link
-                        href="/user/collections"
+                        href="/#collections"
                         className="flex-1 border-2 border-[#B9974F] text-[#B9974F] px-5 py-3 rounded-xl text-sm font-semibold hover:bg-[#B9974F] hover:text-white transition-all text-center"
                     >
                         Continue Shopping
