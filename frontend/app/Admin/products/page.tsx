@@ -8,7 +8,7 @@ import {
     DollarSign, ListFilter, Scissors
 } from 'lucide-react'
 
-const API = process.env.NEXT_PUBLIC_API_URL
+const API = process.env.NEXT_PUBLIC_BACKEND_URL
 
 /* ─── Reusable labelled input wrapper ─── */
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -146,11 +146,32 @@ export default function AddProductPage() {
                     </Link>
                 </div>
 
-                {/* Success */}
+                {/* Success Toast */}
                 {success && (
-                    <div className="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-6 text-sm font-medium">
-                        <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
-                        Product added successfully!
+                    <div
+                        style={{ animation: "slideInToast 0.4s cubic-bezier(0.34,1.56,0.64,1) both" }}
+                        className="fixed top-6 right-6 z-50 flex items-center gap-3 bg-white border border-green-200 text-green-700 px-5 py-4 rounded-2xl shadow-2xl shadow-green-100 min-w-[300px]"
+                    >
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+                            <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-gray-800">Product Added!</p>
+                            <p className="text-xs text-gray-400 mt-0.5">The product was listed successfully.</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setSuccess(false)}
+                            className="ml-auto text-gray-300 hover:text-gray-500 transition-colors"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                        <style>{`
+                            @keyframes slideInToast {
+                                from { opacity: 0; transform: translateX(110%) scale(0.9); }
+                                to   { opacity: 1; transform: translateX(0)   scale(1);   }
+                            }
+                        `}</style>
                     </div>
                 )}
 
