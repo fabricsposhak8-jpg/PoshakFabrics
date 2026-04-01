@@ -178,6 +178,7 @@ const Header = () => {
                             <Link href="/" onClick={() => {
                                 logout();
                                 setIsOpen(false);
+                                setIsLoggedIn(false);
                             }} className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium">
                                 Logout
                             </Link>
