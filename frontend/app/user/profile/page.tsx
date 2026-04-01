@@ -3,7 +3,7 @@
 import { useUser } from '@/app/context/page'
 import React from 'react'
 import Link from 'next/link'
-import { User, Mail, Shield, LogOut, Edit2, Lock, ArrowRight } from 'lucide-react'
+import { User, Mail, Shield, LogOut, Edit2, Lock, ArrowRight, AlertCircle } from 'lucide-react'
 
 export default function ProfilePage() {
     const { user, isLoaded, logout } = useUser()
@@ -21,29 +21,13 @@ export default function ProfilePage() {
     // 2. Unauthenticated State (Login First)
     if (!user) {
         return (
-            <div className="min-h-[80vh] flex items-center justify-center p-6 bg-gray-50">
-                <div className="bg-white shadow-2xl rounded-3xl w-full max-w-md p-10 text-center border border-gray-100">
-                    <div className="w-20 h-20 bg-[#FDF8EE] rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Lock className="w-10 h-10 text-[#B9974F]" />
-                    </div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-3">Access Denied</h2>
-                    <p className="text-gray-500 mb-8">Please login to your account to view and manage your profile details.</p>
-
-                    <div className="flex flex-col gap-3">
-                        <Link
-                            href="/login"
-                            className="w-full bg-[#B9974F] text-white font-bold py-4 rounded-xl hover:bg-[#a0833e] transition-all shadow-lg shadow-[#B9974F]/20 flex items-center justify-center gap-2 group"
-                        >
-                            Login Now
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                        <Link
-                            href="/register"
-                            className="w-full bg-white text-gray-700 font-semibold py-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
-                        >
-                            Create an Account
-                        </Link>
-                    </div>
+            <div className="min-h-screen bg-[#FAF9F7] flex items-center justify-center px-4">
+                <div className="bg-white rounded-2xl border border-red-100 shadow-sm p-8 max-w-sm w-full text-center">
+                    <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-3" />
+                    <p className="text-gray-700 font-medium mb-4">Please login to your account to view and manage your profile details.</p>
+                    <Link href="/" className="bg-[#B9974F] text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-[#a0833e] transition-colors">
+                        Go Home
+                    </Link>
                 </div>
             </div>
         )

@@ -26,7 +26,7 @@ const Page = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="#collections"
-              className="bg-[#C19344] cursor-pointer text-black font-semibold px-6 py-3 rounded-lg hover:bg-[#B9974F] transition w-full sm:w-auto">
+              className="bg-[#C19344] cursor-pointer text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#B9974F] transition w-full sm:w-auto">
               Shop Now
             </Link>
           </div>

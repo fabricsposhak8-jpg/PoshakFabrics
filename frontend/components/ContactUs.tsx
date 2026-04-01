@@ -125,7 +125,7 @@ const ContactUs = () => {
 
                     <button
                         type="submit"
-                        className="bg-[#C19344] cursor-pointer text-black font-semibold px-6 py-3 rounded-lg hover:bg-[#B9974F] transition w-full"
+                        className="bg-[#C19344] cursor-pointer text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#B9974F] transition w-full"
                     >
                         Send Message
                     </button>
