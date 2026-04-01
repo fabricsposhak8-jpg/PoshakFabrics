@@ -153,7 +153,7 @@ export default function CartPage() {
 
                         {/* Checkout via WhatsApp / Contact */}
                         <Link
-                            href={`/checkout/${cart[0]?.id}`}
+                            href={`/user/checkout/${cart[0]?.id}`}
                             className="w-full block text-center bg-black text-white py-3.5 rounded-xl font-semibold hover:bg-[#B9974F] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
                         >
                             Place Order
