@@ -22,8 +22,8 @@ export const getMessagesController = async (req, res) => {
 
 export const deleteMessageController = async (req, res) => {
     try {
-        const message = await deleteMessage(req.params.id);
-        return res.status(200).send("Message deleted successfully");
+        const result = await deleteMessage(req.params.id);
+        return res.status(200).json({ msg: "Message deleted successfully", deleteMessage: result });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ msg: "Server error" });

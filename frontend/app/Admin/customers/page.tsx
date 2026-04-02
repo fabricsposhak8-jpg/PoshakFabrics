@@ -1,5 +1,4 @@
 "use client"
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Users, Search, Mail, Calendar, Shield } from 'lucide-react'
 
@@ -21,10 +20,14 @@ const CustomerPage = () => {
         const token = localStorage.getItem("token")
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`${API}/api/auth/all-users`, {
-                    headers: { Authorization: `Bearer ${token}` }
+                const response = await fetch(`${API}/api/auth/all-users`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 })
-                setCustomers(response.data.users)
+                const data = await response.json()
+                setCustomers(data.users)
             } catch (error) {
                 console.error("Error fetching users:", error)
             } finally {

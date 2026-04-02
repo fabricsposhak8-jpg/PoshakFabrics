@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
     X, ImagePlus, Tag, Package, Info, Layers,
     Percent, CheckCircle2, ArrowRight, Loader2,
@@ -38,6 +38,7 @@ function Section({ icon, title, children }: { icon: React.ReactNode; title: stri
 }
 
 export default function AddProductPage() {
+    const router = useRouter()
     const [success, setSuccess] = useState(false)
     const [loading, setLoading] = useState(false)
     const [token, setToken] = useState("")
@@ -108,8 +109,13 @@ export default function AddProductPage() {
         images.forEach(img => formData.append("images", img))
 
         try {
-            const res = await axios.post(`${API}/api/products/add`, formData, {
-                headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
+
+            const res = await fetch(`${API}/api/products/add`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+                body: formData
             })
             if (res.status === 200) {
                 setProduct({ name: "", brand: "", category: "", price: "", currency: "PKR", description: "", stock: "", status: "active", type: "stitched", after_discou: "", discount_perc: "" })
@@ -117,7 +123,10 @@ export default function AddProductPage() {
                 setDiscount({ discount_perc: "", after_dicou: "" })
                 setImages([]); setPreviews([])
                 setSuccess(true)
-                setTimeout(() => setSuccess(false), 3000)
+                setTimeout(() => {
+                    setSuccess(false)
+                    router.push("/Admin/products/AllProducts")
+                }, 2000)
             }
         } catch (err) {
             console.error(err)
@@ -156,8 +165,8 @@ export default function AddProductPage() {
                             <CheckCircle2 className="h-5 w-5" />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-gray-800">Product Added!</p>
-                            <p className="text-xs text-gray-400 mt-0.5">The product was listed successfully.</p>
+                            <p className="text-sm font-bold text-gray-800">Product Added Successfully!</p>
+                            <p className="text-xs text-gray-400 mt-0.5">Redirecting to product list...</p>
                         </div>
                         <button
                             type="button"

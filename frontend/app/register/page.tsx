@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
@@ -26,20 +25,28 @@ export default function RegisterPage() {
         setSuccess("");
 
         try {
-            const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/register`,
-                { username, email, password }
-            );
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, email, password })
+            });
 
-            if (response.status === 201 || response.status === 200) {
-                setSuccess("Account created successfully 🎉");
+            const response = await res.json();
+            console.log("response", response);
 
+            if (res.ok) {
+                setSuccess(response.msg || "Account created successfully 🎉");
                 setTimeout(() => {
                     router.push("/login");
                 }, 1500);
+            } else {
+                setError(response.msg || "Registration failed");
             }
         } catch (err: any) {
-            setError(err.response?.data?.message || "Something went wrong");
+            console.error("Registration Catch Error:", err);
+            setError("Network error or server currently unreachable");
         } finally {
             setLoading(false);
         }

@@ -1,5 +1,4 @@
 "use client"
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { PackageSearch, Clock, Truck, CheckCircle2, AlertCircle, Ban } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -25,11 +24,11 @@ interface OrdersResponse {
 
 // ── Status Badge (same config as user-facing pages) ──────────────────────────
 const STATUS_CONFIG: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode; label: string }> = {
-    pending:    { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", icon: <Clock size={11} />,         label: "Pending" },
-    processing: { bg: "#EFF6FF", text: "#1E40AF", border: "#BFDBFE", icon: <AlertCircle size={11} />,  label: "Processing" },
-    shipped:    { bg: "#F0F9FF", text: "#0C4A6E", border: "#BAE6FD", icon: <Truck size={11} />,         label: "Shipped" },
-    delivered:  { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0", icon: <CheckCircle2 size={11} />, label: "Delivered" },
-    cancelled:  { bg: "#FFF1F2", text: "#881337", border: "#FECDD3", icon: <Ban size={11} />,           label: "Cancelled" },
+    pending: { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", icon: <Clock size={11} />, label: "Pending" },
+    processing: { bg: "#EFF6FF", text: "#1E40AF", border: "#BFDBFE", icon: <AlertCircle size={11} />, label: "Processing" },
+    shipped: { bg: "#F0F9FF", text: "#0C4A6E", border: "#BAE6FD", icon: <Truck size={11} />, label: "Shipped" },
+    delivered: { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0", icon: <CheckCircle2 size={11} />, label: "Delivered" },
+    cancelled: { bg: "#FFF1F2", text: "#881337", border: "#FECDD3", icon: <Ban size={11} />, label: "Cancelled" },
 }
 
 function OrderStatusBadge({ status }: { status: string }) {
@@ -56,11 +55,15 @@ const OrdersPage = () => {
         const token = localStorage.getItem("token")
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`${API}/api/order/admin/get`, {
-                    headers: { Authorization: `Bearer ${token}` }
+                const response = await fetch(`${API}/api/order/admin/get`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 })
-                setOrders(response.data)
-                console.log("Orders", response.data)
+                const data = await response.json()
+                setOrders(data)
+                console.log("Orders", data)
             } catch (error) {
                 console.error("Error fetching orders:", error)
             } finally {

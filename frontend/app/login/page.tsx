@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useUser } from "../context/page";
 import { Eye, EyeOff } from "lucide-react";
@@ -22,27 +21,36 @@ export default function LoginPage() {
         setError("");
 
         try {
-            const { data } = await axios.post(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`,
-                { email, password }
-            );
-
-            localStorage.setItem("token", data.token);
-
-            login({
-                id: data.user.id,
-                username: data.user.username,
-                email: data.user.email,
-                role: data.user.role,
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
             });
 
-            if (data.user.role === "admin") {
-                router.push("/Admin");
+            const data = await res.json();
+
+            if (res.ok) {
+                localStorage.setItem("token", data.token);
+                login({
+                    id: data.user.id,
+                    username: data.user.username,
+                    email: data.user.email,
+                    role: data.user.role,
+                });
+
+                if (data.user.role === "admin") {
+                    router.push("/Admin");
+                } else {
+                    router.push("/");
+                }
             } else {
-                router.push("/");
+                setError(data.msg || "Login failed");
             }
         } catch (err: any) {
-            setError(err.response?.data?.message || "Login failed");
+            console.error("Login Catch Error:", err);
+            setError("Network error or server currently unreachable");
         } finally {
             setLoading(false);
         }

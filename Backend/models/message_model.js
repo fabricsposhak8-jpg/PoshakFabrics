@@ -14,6 +14,6 @@ export const getMessages = async () => {
 };
 
 export const deleteMessage = async (id) => {
-    const result = await pool.query("DELETE FROM messages WHERE id = $1", [id]);
+    const result = await pool.query("DELETE FROM messages WHERE id = $1 RETURNING *", [id]);
     return result.rows[0];
 };

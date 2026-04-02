@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -55,19 +54,19 @@ const ORDER_STATUS_CONFIG: Record<string, {
     bg: string; text: string; border: string; dot: string;
     icon: React.ReactNode; label: string;
 }> = {
-    pending:    { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", dot: "#F59E0B", icon: <Clock className="h-3.5 w-3.5" />,        label: "Pending" },
+    pending: { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", dot: "#F59E0B", icon: <Clock className="h-3.5 w-3.5" />, label: "Pending" },
     processing: { bg: "#EFF6FF", text: "#1E40AF", border: "#BFDBFE", dot: "#3B82F6", icon: <AlertCircle className="h-3.5 w-3.5" />, label: "Processing" },
-    shipped:    { bg: "#F0F9FF", text: "#0C4A6E", border: "#BAE6FD", dot: "#0EA5E9", icon: <Truck className="h-3.5 w-3.5" />,        label: "Shipped" },
-    delivered:  { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0", dot: "#22C55E", icon: <CheckCircle2 className="h-3.5 w-3.5" />, label: "Delivered" },
-    cancelled:  { bg: "#FFF1F2", text: "#881337", border: "#FECDD3", dot: "#F43F5E", icon: <Ban className="h-3.5 w-3.5" />,          label: "Cancelled" },
+    shipped: { bg: "#F0F9FF", text: "#0C4A6E", border: "#BAE6FD", dot: "#0EA5E9", icon: <Truck className="h-3.5 w-3.5" />, label: "Shipped" },
+    delivered: { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0", dot: "#22C55E", icon: <CheckCircle2 className="h-3.5 w-3.5" />, label: "Delivered" },
+    cancelled: { bg: "#FFF1F2", text: "#881337", border: "#FECDD3", dot: "#F43F5E", icon: <Ban className="h-3.5 w-3.5" />, label: "Cancelled" },
 };
 
 const PAY_STATUS_CONFIG: Record<string, {
     bg: string; text: string; border: string; dot: string; icon: React.ReactNode;
 }> = {
     pending: { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A", dot: "#F59E0B", icon: <Clock className="h-3.5 w-3.5" /> },
-    paid:    { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0", dot: "#22C55E", icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
-    failed:  { bg: "#FFF1F2", text: "#881337", border: "#FECDD3", dot: "#F43F5E", icon: <XCircle className="h-3.5 w-3.5" /> },
+    paid: { bg: "#F0FDF4", text: "#14532D", border: "#BBF7D0", dot: "#22C55E", icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
+    failed: { bg: "#FFF1F2", text: "#881337", border: "#FECDD3", dot: "#F43F5E", icon: <XCircle className="h-3.5 w-3.5" /> },
 };
 
 function OrderStatusBadge({ status }: { status: string }) {
@@ -216,9 +215,13 @@ export default function OrderDetailPage() {
 
         const fetchOrder = async () => {
             try {
-                const res = await axios.get(`${API}/api/order/user/get/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                const response = await fetch(`${API}/api/order/user/get/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                const res = await response.json();
                 setOrder(res.data.order ?? res.data);
             } catch (err: any) {
                 setError(err?.response?.data?.msg || "Failed to load order.");
@@ -233,12 +236,19 @@ export default function OrderDetailPage() {
         const token = localStorage.getItem("token");
         setDeleting(true);
         try {
-            await axios.delete(`${API}/api/order/delete/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setDeleted(true);
-            setShowModal(false);
-            setTimeout(() => router.push("/user/orders"), 2000);
+
+            const response = await fetch(`${API}/api/order/delete/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            const res = await response.json();
+            if (res.status == 200) {
+                setDeleted(true);
+                setShowModal(false);
+                setTimeout(() => router.push("/user/orders"), 2000);
+            }
         } catch (err: any) {
             setError(err?.response?.data?.msg || "Failed to cancel order.");
             setShowModal(false);

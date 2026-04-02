@@ -2,10 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { 
-    Plus, Search, Edit, Trash2, AlertTriangle, 
+import {
+    Plus, Search, Edit, Trash2, AlertTriangle,
     CheckCircle2, Package, X, Loader2
 } from "lucide-react";
 
@@ -41,10 +40,14 @@ const AllProducts = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${API}/api/products`, {
-                headers: { Authorization: `Bearer ${token}` }
+            const response = await fetch(`${API}/api/products`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             });
-            setProducts(response.data);
+            const data = await response.json();
+            setProducts(data);
         } catch (error) {
             console.error("Error fetching products:", error);
         } finally {
@@ -58,17 +61,21 @@ const AllProducts = () => {
     }, []);
 
     useEffect(() => {
-        if (token) fetchProducts();  // only fetch when token is available
+        if (token) fetchProducts();
     }, [token]);
 
     const handleDeleteConfirm = async () => {
         if (!deleteModal.productId) return;
-        
+
         setIsDeleting(true);
         try {
-            await axios.delete(`${API}/api/products/${deleteModal.productId}`, {
-                headers: { Authorization: `Bearer ${token}` }
+            const response = await fetch(`${API}/api/products/${deleteModal.productId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             });
+            const data = await response.json();
             setSuccessMessage("Product deleted successfully.");
             setTimeout(() => setSuccessMessage(""), 3000);
             fetchProducts();
@@ -80,7 +87,7 @@ const AllProducts = () => {
         }
     };
 
-    const filteredProducts = products.filter(p => 
+    const filteredProducts = products.filter(p =>
         p.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.brand?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -89,7 +96,7 @@ const AllProducts = () => {
     return (
         <div className="min-h-screen bg-[#FAF9F7] py-10 px-4">
             <div className="max-w-7xl mx-auto">
-                
+
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                     <div>
@@ -140,9 +147,9 @@ const AllProducts = () => {
                 {/* Search / Filter Bar */}
                 <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6 flex items-center gap-3">
                     <Search className="h-5 w-5 text-gray-400 ml-2" />
-                    <input 
-                        type="text" 
-                        placeholder="Search products by name, brand or category..." 
+                    <input
+                        type="text"
+                        placeholder="Search products by name, brand or category..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full bg-transparent border-none text-sm text-gray-800 focus:outline-none focus:ring-0 placeholder:text-gray-400"
@@ -236,7 +243,7 @@ const AllProducts = () => {
                 {/* Delete Confirmation Modal */}
                 {deleteModal.isOpen && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-gray-900/40 backdrop-blur-sm">
-                        <div 
+                        <div
                             className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl scale-100 animate-[modalIn_0.2s_ease-out]"
                         >
                             <div className="flex flex-col items-center text-center">
@@ -247,7 +254,7 @@ const AllProducts = () => {
                                 <p className="text-sm text-gray-500 mb-6">
                                     Are you sure you want to delete this product? This action cannot be undone.
                                 </p>
-                                
+
                                 <div className="flex gap-3 w-full">
                                     <button
                                         onClick={() => setDeleteModal({ isOpen: false, productId: null })}

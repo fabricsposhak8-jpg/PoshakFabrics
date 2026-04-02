@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, Tag } from "lucide-react";
 
 export default function CartPage() {
+
     const { cart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCart();
 
     console.log("totalItems", totalItems);
@@ -26,7 +27,7 @@ export default function CartPage() {
                     Looks like you haven&apos;t added anything yet. Explore our premium collections!
                 </p>
                 <Link
-                    href="/user/collections/stitched"
+                    href="/#collections"
                     className="inline-flex items-center gap-2 bg-black text-white px-7 py-3 rounded-xl font-semibold hover:bg-[#B9974F] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
                 >
                     <ArrowLeft size={18} />
@@ -35,6 +36,8 @@ export default function CartPage() {
             </div>
         );
     }
+
+
 
     return (
         <div className="max-w-5xl mx-auto px-4 py-10">

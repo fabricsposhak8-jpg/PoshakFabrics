@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import axios from "axios";
 import Link from "next/link";
 import {
     ShoppingBag, CreditCard, Wallet, Truck, CheckCircle2,
@@ -117,8 +116,14 @@ export default function CheckoutPage() {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await axios.get(`${API}/api/products/user/${id}`);
-                const data = res.data;
+                const token = localStorage.getItem("token");
+                const res = await fetch(`${API}/api/products/user/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                const data = await res.json();
                 if (typeof data.images === "string") {
                     try { data.images = JSON.parse(data.images); } catch { data.images = []; }
                 }
@@ -180,11 +185,20 @@ export default function CheckoutPage() {
                 formData.append("payment_receipt", screenshotFile);
             }
 
-            await axios.post(`${API}/api/order/add/${id}`, formData, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            setSuccess(true);
+            const res = await fetch(`${API}/api/order/add/${id}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+                body: formData
+            })
+            const data = await res.json();
+            if (data.success) {
+                setSuccess(true);
+            } else {
+                setError(data.msg);
+                setOrderFailed(true);
+            }
         } catch (err: any) {
             const msg = err?.response?.data?.msg || "Something went wrong. Please try again.";
             setError(msg);

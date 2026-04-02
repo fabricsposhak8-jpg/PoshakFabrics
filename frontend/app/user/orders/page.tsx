@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -70,7 +69,7 @@ export default function OrdersPage() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const fetch = async () => {
+        const fetchData = async () => {
             const token = localStorage.getItem("token");
             if (!token) {
                 setError("Please log in to view your orders.");
@@ -78,10 +77,14 @@ export default function OrdersPage() {
                 return;
             }
             try {
-                const res = await axios.get(`${API}/api/order/get`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                // API returns { msg, order }
+
+                const response = await fetch(`${API}/api/order/get`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                const res = await response.json();
                 setOrders(res.data.order || []);
             } catch (err: any) {
                 setError(err?.response?.data?.msg || "Failed to load orders.");
@@ -89,7 +92,7 @@ export default function OrdersPage() {
                 setLoading(false);
             }
         };
-        fetch();
+        fetchData();
     }, []);
 
     /* ── Loading ── */

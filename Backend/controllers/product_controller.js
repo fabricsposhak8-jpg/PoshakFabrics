@@ -23,7 +23,7 @@ export const getAllProductsController = async (req, res) => {
 export const deleteProductController = async (req, res) => {
     try {
         const product = await deleteProduct(req.params.id);
-        return res.status(200).send("Product deleted successfully");
+        return res.status(200).json({ msg: "Product deleted successfully" });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ msg: "Server error" });

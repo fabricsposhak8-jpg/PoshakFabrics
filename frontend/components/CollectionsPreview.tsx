@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Tag } from "lucide-react";
@@ -14,10 +13,11 @@ export default function CollectionsPreview() {
         setActiveType(type);
         setLoading(true);
         try {
-            const response = await axios.get(
+            const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/user`
             );
-            const filtered = response.data.filter((item: any) => item.type === type);
+            const data = await response.json();
+            const filtered = data.filter((item: any) => item.type === type);
 
             // Parse images if string
             const parsed = filtered.map((p: any) => ({

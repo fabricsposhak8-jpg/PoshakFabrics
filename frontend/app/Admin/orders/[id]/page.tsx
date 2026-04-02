@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import axios from 'axios'
 import { ArrowLeft, User, Package, CreditCard, Truck, CheckCircle2, Clock, XCircle, AlertCircle, ExternalLink, MapPin, Save, X } from 'lucide-react'
 
 const OrderDetailPage = () => {
@@ -27,10 +26,14 @@ const OrderDetailPage = () => {
         const token = localStorage.getItem("token")
         const fetchOrder = async () => {
             try {
-                const response = await axios.get(`${API}/api/order/admin/get/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
+                const response = await fetch(`${API}/api/order/admin/get/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 })
-                setOrder(response.data.order)
+                const data = await response.json()
+                setOrder(data.order)
             } catch (error) {
                 console.error("Error fetching order:", error)
             } finally {
@@ -61,11 +64,17 @@ const OrderDetailPage = () => {
             if (field === "order") payload.order_status = updatedStatus.order_status
             if (field === "delivery") payload.is_delivered = updatedStatus.is_delivered === "true"
 
-            const response = await axios.put(`${API}/api/order/update`, payload, {
-                headers: { Authorization: `Bearer ${token}` }
+            const response = await fetch(`${API}/api/order/update`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             })
+            const data = await response.json()
             // Update local state so UI reflects changes immediately
-            setOrder((prev: any) => ({ ...prev, ...response.data.order }))
+            setOrder((prev: any) => ({ ...prev, ...data.order }))
             setUpdatingSection(null)
         } catch (error) {
             console.error("Update failed:", error)

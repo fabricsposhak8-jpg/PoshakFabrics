@@ -1,6 +1,5 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import axios from "axios"
 import { useParams, useRouter } from "next/navigation"
 import {
     X, ImagePlus, Tag, Scissors, ArrowLeft,
@@ -68,11 +67,16 @@ const EditPage = () => {
         if (!id || !token) return
         const fetchProduct = async () => {
             try {
-                const res = await axios.get(
+                const res = await fetch(
                     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/get/${id}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    }
                 )
-                const data = res.data
+                const data = await res.json()
                 const dp = data.discount_perc?.toString() || ""
                 const ad = data.after_discou?.toString() || ""
                 setProduct({
@@ -144,13 +148,21 @@ const EditPage = () => {
         formData.append("fabric_details", JSON.stringify(fabric_details))
         newImages.forEach(img => formData.append("images", img))
         try {
-            await axios.put(
+            const res = await fetch(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/update/${id}`,
-                formData,
-                { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
+                {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: formData
+                }
             )
-            setSuccess(true)
-            setTimeout(() => { setSuccess(false); router.push("/Admin/products/AllProducts") }, 2000)
+            const data = await res.json()
+            if (res.status === 200) {
+                setSuccess(true)
+                setTimeout(() => { setSuccess(false); router.push("/Admin/products/AllProducts") }, 2000)
+            }
         } catch (error) {
             console.log(error)
         } finally {
@@ -187,11 +199,32 @@ const EditPage = () => {
                     </div>
                 </div>
 
-                {/* Success */}
+                {/* Success Toast */}
                 {success && (
-                    <div className="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-6 text-sm font-medium">
-                        <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
-                        Product updated successfully! Redirecting…
+                    <div
+                        style={{ animation: "slideInToast 0.4s cubic-bezier(0.34,1.56,0.64,1) both" }}
+                        className="fixed top-6 right-6 z-50 flex items-center gap-3 bg-white border border-green-200 text-green-700 px-5 py-4 rounded-2xl shadow-2xl shadow-green-100 min-w-[300px]"
+                    >
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+                            <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-gray-800">Product Updated Successfully!</p>
+                            <p className="text-xs text-gray-400 mt-0.5">Redirecting to product list...</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setSuccess(false)}
+                            className="ml-auto text-gray-300 hover:text-gray-500 transition-colors"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                        <style>{`
+                            @keyframes slideInToast {
+                                from { opacity: 0; transform: translateX(110%) scale(0.9); }
+                                to   { opacity: 1; transform: translateX(0)   scale(1);   }
+                            }
+                        `}</style>
                     </div>
                 )}
 

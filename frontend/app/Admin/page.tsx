@@ -3,7 +3,6 @@
 import { useUser } from "../context/page";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 export default function AdminDashboard() {
     const { user } = useUser();
@@ -20,21 +19,33 @@ export default function AdminDashboard() {
 
             // Call both APIs in parallel
             const [productsRes, ordersRes, messagesRes] = await Promise.all([
-                axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/`, {
-                    headers: { Authorization: `Bearer ${token}` },
+
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 }),
-                axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/admin/get`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/admin/get`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 }),
-                axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/messages/`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 }),
             ]);
-
+            const productsData = await productsRes.json();
+            const ordersData = await ordersRes.json();
+            const messagesData = await messagesRes.json();
             // Update state with counts
-            setProductsCount(productsRes.data.length);
-            setMessagesCount(messagesRes.data.length);
-            setOrdersCount(ordersRes.data.order.length);
+            setProductsCount(productsData.length);
+            setMessagesCount(messagesData.length);
+            setOrdersCount(ordersData.order.length);
         } catch (error) {
             console.log("Error fetching details:", error);
             setProductsCount(0);

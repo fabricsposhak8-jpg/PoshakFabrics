@@ -2,7 +2,6 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 import {
@@ -171,8 +170,14 @@ const UserProductView = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/user/${id}`);
-                const data = res.data;
+                const token = localStorage.getItem("token");
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/user/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                const data = await res.json();
                 if (typeof data.fabric_details === "string") {
                     try { data.fabric_details = JSON.parse(data.fabric_details); } catch { data.fabric_details = []; }
                 }
@@ -213,7 +218,7 @@ const UserProductView = () => {
     const isInStock = product.stock > 0;
 
     return (
-        <div className="min-h-screen bg-[#FAF9F7]">
+        <div className="min-h-screen">
             <div className="max-w-6xl mx-auto px-4 py-10">
 
                 {/* ── Two-column layout ── */}
@@ -239,8 +244,17 @@ const UserProductView = () => {
                             </div>
                             <h1 className="text-3xl font-bold text-gray-900 leading-snug mt-2">{product.name}</h1>
                             <p className="text-2xl font-bold text-[#B9974F] mt-2">
-                                {Number(product.after_discou).toLocaleString()} <span className="text-base font-medium text-gray-400">{product.currency}</span>
-
+                                {product.after_discou && Number(product.after_discou) < Number(product.price) ? (
+                                    <>
+                                        {Number(product.after_discou).toLocaleString()}
+                                        <span className="mx-3 line-through text-gray-300 text-lg font-medium italic">
+                                            {Number(product.price).toLocaleString()}
+                                        </span>
+                                    </>
+                                ) : (
+                                    Number(product.price).toLocaleString()
+                                )}
+                                <span className="text-base font-medium text-gray-400">{product.currency}</span>
                             </p>
                         </div>
 
