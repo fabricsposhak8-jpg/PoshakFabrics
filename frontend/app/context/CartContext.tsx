@@ -28,10 +28,6 @@ const CartContext = createContext<CartContextType | null>(null);
 const getToken = () => localStorage.getItem("token");
 const API = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const authHeader = () => ({
-    headers: { Authorization: `Bearer ${getToken()}` },
-});
-
 export default function CartProvider({ children }: { children: React.ReactNode }) {
     const [cart, setCart] = useState<CartItem[]>([]);
 
@@ -47,15 +43,21 @@ export default function CartProvider({ children }: { children: React.ReactNode }
                         "Authorization": `Bearer ${token}`
                     }
                 })
-                const response = await res.json();
 
-                setCart(response.result);
+                if (!res.ok) {
+                    console.error("Failed to fetch cart. Status:", res.status);
+                    return;
+                }
+
+                const response = await res.json();
+                // ✅ Use fallback to empty array to prevents crash if .result is missing
+                setCart(Array.isArray(response.result) ? response.result : []);
             } catch (error) {
                 console.error("Failed to fetch cart:", error);
             }
         };
         fetchCart();
-    }, []);
+    }, [API]);
 
     const addToCart = async (item: Omit<CartItem, "quantity">) => {
         try {
@@ -137,8 +139,9 @@ export default function CartProvider({ children }: { children: React.ReactNode }
         }
     };
 
-    const totalItems = cart.reduce((sum, p) => sum + p.quantity, 0);
-    const totalPrice = cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
+    // ✅ Use optional chaining + fallback to handle undefined/null cart
+    const totalItems = (cart || []).reduce((sum, p) => sum + (p?.quantity || 0), 0);
+    const totalPrice = (cart || []).reduce((sum, p) => sum + (p?.price || 0) * (p?.quantity || 0), 0);
 
     return (
         <CartContext.Provider

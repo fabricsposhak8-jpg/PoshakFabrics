@@ -8,8 +8,6 @@ export default function CartPage() {
 
     const { cart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCart();
 
-    console.log("totalItems", totalItems);
-    console.log("totalPrice", totalPrice);
     const formatPrice = (price: number, currency: string) => {
         if (currency === "PKR") return `Rs. ${price.toLocaleString()}`;
         if (currency === "USD") return `$${price.toFixed(2)}`;
