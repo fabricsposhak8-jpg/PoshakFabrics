@@ -60,8 +60,13 @@ export default function CartProvider({ children }: { children: React.ReactNode }
     }, [API]);
 
     const addToCart = async (item: Omit<CartItem, "quantity">) => {
+        const token = getToken();
+        if (!token) {
+            alert("Please login to add items to your cart.");
+            return;
+        }
+
         try {
-            const token = getToken();
             const res = await fetch(`${API}/api/cart/addtocart`, {
                 method: "POST",
                 headers: {
@@ -70,23 +75,37 @@ export default function CartProvider({ children }: { children: React.ReactNode }
                 },
                 body: JSON.stringify({ productId: item.id, quantity: 1 })
             });
-            setCart((prev) => {
-                const existing = prev.find((p) => p.id === item.id);
-                if (existing) {
-                    return prev.map((p) =>
-                        p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
-                    );
-                }
-                return [...prev, { ...item, quantity: 1 }];
-            });
+
+            if (res.status === 401) {
+                alert("Your session has expired. Please login again.");
+                localStorage.removeItem("token");
+                return;
+            }
+
+            if (res.ok) {
+                setCart((prev) => {
+                    const existing = prev.find((p) => p.id === item.id);
+                    if (existing) {
+                        return prev.map((p) =>
+                            p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
+                        );
+                    }
+                    return [...prev, { ...item, quantity: 1 }];
+                });
+            }
         } catch (error) {
             console.error("Failed to add to cart:", error);
         }
     };
 
     const removeFromCart = async (id: number) => {
+        const token = getToken();
+        if (!token) {
+            alert("Please login first.");
+            return;
+        }
+
         try {
-            const token = getToken();
             const res = await fetch(`${API}/api/cart/removefromcart`, {
                 method: "DELETE",
                 headers: {
@@ -95,6 +114,13 @@ export default function CartProvider({ children }: { children: React.ReactNode }
                 },
                 body: JSON.stringify({ productId: id })
             });
+
+            if (res.status === 401) {
+                alert("Your session has expired. Please login again.");
+                localStorage.removeItem("token");
+                return;
+            }
+
             const data = await res.json();
             if (data.status === 200) {
                 setCart((prev) => prev.filter((p) => p.id !== id));
@@ -106,8 +132,13 @@ export default function CartProvider({ children }: { children: React.ReactNode }
 
     const updateQuantity = async (id: number, quantity: number) => {
         if (quantity < 1) return;
+        const token = getToken();
+        if (!token) {
+            alert("Please login first.");
+            return;
+        }
+
         try {
-            const token = getToken();
             const res = await fetch(`${API}/api/cart/updatequantity`, {
                 method: "PUT",
                 headers: {
@@ -116,6 +147,13 @@ export default function CartProvider({ children }: { children: React.ReactNode }
                 },
                 body: JSON.stringify({ productId: id, quantity })
             });
+
+            if (res.status === 401) {
+                alert("Your session has expired. Please login again.");
+                localStorage.removeItem("token");
+                return;
+            }
+
             setCart((prev) =>
                 prev.map((p) => (p.id === id ? { ...p, quantity } : p))
             );
@@ -125,14 +163,26 @@ export default function CartProvider({ children }: { children: React.ReactNode }
     };
 
     const clearCart = async () => {
+        const token = getToken();
+        if (!token) {
+            alert("Please login first.");
+            return;
+        }
+
         try {
-            const token = getToken();
             const res = await fetch(`${API}/api/cart/clearcart`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
             });
+
+            if (res.status === 401) {
+                alert("Your session has expired. Please login again.");
+                localStorage.removeItem("token");
+                return;
+            }
+
             setCart([]);
         } catch (error) {
             console.error("Failed to clear cart:", error);
