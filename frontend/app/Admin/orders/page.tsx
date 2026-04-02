@@ -61,6 +61,17 @@ const OrdersPage = () => {
                         "Authorization": `Bearer ${token}`
                     }
                 })
+
+                if (response.status === 401) {
+                    console.error("Unauthorized access to admin orders.");
+                    router.push("/login?error=unauthorized");
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch admin orders.");
+                }
+
                 const data = await response.json()
                 setOrders(data)
                 console.log("Orders", data)
@@ -70,14 +81,18 @@ const OrdersPage = () => {
                 setLoading(false)
             }
         }
-        fetchOrders()
-    }, [])
+        if (token) {
+            fetchOrders()
+        } else {
+            router.push("/login")
+        }
+    }, [API, router])
 
     // Unique payment methods for filter dropdown
-    const paymentMethods = ["all", ...Array.from(new Set(Orders.order.map(o => o.payment_method)))]
+    const paymentMethods = ["all", ...Array.from(new Set((Orders?.order || []).map(o => o.payment_method)))]
 
     // Filtered orders based on search + payment method filter
-    const filtered = Orders.order.filter((item) => {
+    const filtered = (Orders?.order || []).filter((item) => {
         const matchesSearch =
             String(item.id ?? "").includes(search) ||
             String(item.username ?? "").includes(search) ||
@@ -87,8 +102,8 @@ const OrdersPage = () => {
         return matchesSearch && matchesMethod
     })
 
-    const totalRevenue = Orders.order.reduce((sum, o) => sum + Number(o.total_price), 0)
-    const totalShipping = Orders.order.reduce((sum, o) => sum + Number(o.shipping_price), 0)
+    const totalRevenue = (Orders?.order || []).reduce((sum, o) => sum + Number(o.total_price), 0)
+    const totalShipping = (Orders?.order || []).reduce((sum, o) => sum + Number(o.shipping_price), 0)
 
     return (
         <div className="p-8">

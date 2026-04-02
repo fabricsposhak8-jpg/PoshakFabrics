@@ -17,12 +17,11 @@ type Order = {
     payment_method: string;
     total_price: string;
     shipping_price: string;
-    order_status: string;     // ✅ correct field name from API
-    is_delivered: boolean;    // ✅ used to override status to Delivered
+    order_status: string;
+    is_delivered: boolean;
     created_at: string;
 };
 
-// ✅ Same config as detail page — keeps status display in sync
 const ORDER_STATUS_CONFIG: Record<string, {
     bg: string; text: string; border: string; icon: React.ReactNode; label: string;
 }> = {
@@ -77,17 +76,30 @@ export default function OrdersPage() {
                 return;
             }
             try {
-
                 const response = await fetch(`${API}/api/order/get`, {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
                 })
+
+                if (response.status === 401) {
+                    setError("Your session has expired. Please log in again.");
+                    localStorage.removeItem("token");
+                    setLoading(false);
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch orders.");
+                }
+
                 const res = await response.json();
-                setOrders(res.data.order || []);
+                // ✅ Safeguard against missing data or order property
+                setOrders(res?.data?.order || []);
             } catch (err: any) {
-                setError(err?.response?.data?.msg || "Failed to load orders.");
+                console.error("Fetch error:", err);
+                setError(err.message || "Failed to load orders.");
             } finally {
                 setLoading(false);
             }
