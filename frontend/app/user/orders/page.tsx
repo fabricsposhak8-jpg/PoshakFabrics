@@ -95,7 +95,6 @@ export default function OrdersPage() {
                 }
 
                 const res = await response.json();
-                // ✅ Safeguard against missing data or order property
                 setOrders(res?.data?.order || []);
             } catch (err: any) {
                 console.error("Fetch error:", err);
@@ -140,7 +139,7 @@ export default function OrdersPage() {
 
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-8">
-                    <Link href="/user/collections" className="p-2 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 shadow-sm transition-colors">
+                    <Link href="/#collections" className="p-2 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 shadow-sm transition-colors">
                         <ArrowLeft className="h-5 w-5 text-gray-600" />
                     </Link>
                     <div>
