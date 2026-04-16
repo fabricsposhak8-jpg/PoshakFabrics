@@ -8,6 +8,7 @@ import productRoutes from "./routers/product_router.js";
 import messageRoutes from "./routers/message_router.js";
 import cartRoutes from "./routers/cart_router.js";
 import orderRoutes from "./routers/Order_router.js";
+import chatbotRoutes from "./routers/chatbot_router.js";
 
 
 const app = express();
@@ -55,6 +56,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 app.get("/", (req, res) => res.send("POSHAK FABRICS Backend running!"));
 
 const PORT = process.env.PORT || 5000;

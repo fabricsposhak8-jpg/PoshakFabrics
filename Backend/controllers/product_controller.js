@@ -2,7 +2,14 @@ import { createProduct, getAllProducts, deleteProduct, updateProduct, getProduct
 import redis from "../middlewares/Redis.js";
 export const createProductController = async (req, res) => {
     try {
+
         const product = await createProduct(req.body, req.files);
+        if (product) {
+            await redis.del("products");
+        }
+
+        const products = await getAllProducts();
+        await redis.set("products", JSON.stringify(products));
         return res.status(200).json(product);
     } catch (err) {
         console.error(err);
@@ -15,10 +22,10 @@ export const getAllProductsController = async (req, res) => {
 
         const cachedProducts = await redis.get("products");
         if (cachedProducts) {
-            return res.status(200).json(cachedProducts);
+            return res.status(200).json(JSON.parse(cachedProducts));
         }
         const products = await getAllProducts();
-        await redis.set("products", JSON.stringify(products), { ex: 60 * 60 * 24 });
+        await redis.set("products", JSON.stringify(products));
         return res.status(200).json(products);
     } catch (err) {
         console.error(err);
@@ -40,6 +47,12 @@ export const deleteProductController = async (req, res) => {
 export const updateProductController = async (req, res) => {
     try {
         const product = await updateProduct(req.params.id, req.body, req.files);
+        if (product) {
+            await redis.del(`product:${req.params.id}`);
+        }
+
+        const products = await getAllProducts();
+        await redis.set("products", JSON.stringify(products));
         return res.status(200).json(product);
     } catch (err) {
         console.error(err);
@@ -53,7 +66,7 @@ export const getProductByIdController = async (req, res) => {
 
         const cachedProductbyID = await redis.get(`product:${req.params.id}`)
         if (cachedProductbyID) {
-            return res.status(200).json(cachedProductbyID);
+            return res.status(200).json(JSON.parse(cachedProductbyID));
         }
 
         const product = await getProductById(req.params.id);

@@ -2,6 +2,7 @@ import ContactUs from "@/components/ContactUs";
 import Slider from "@/components/Slider";
 import CollectionsPreview from "@/components/CollectionsPreview";
 import Link from "next/link";
+import Chatbot from "@/components/Chatbot";
 
 const Page = () => {
   return (
@@ -37,6 +38,9 @@ const Page = () => {
       <div className="my-8 md:my-12 lg:my-16">
         <Slider />
       </div>
+
+      {/* Chatbot */}
+      <Chatbot />
 
       {/* Collections Preview Section */}
       <CollectionsPreview />
