@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { createUser, getUserByEmail, getAllUsers } from "../models/auth_model.js";
+import redis from "../middlewares/Redis.js";
 
 export const register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -9,6 +10,7 @@ export const register = async (req, res) => {
         if (existingUser) return res.status(400).json({ msg: "User already exists" });
 
         const user = await createUser(username, email, password);
+        await redis.del("users"); // clear users cache so it refreshes next fetch
         res.status(201).json({ msg: "User created", user });
     } catch (err) {
         console.error(err);
@@ -19,6 +21,19 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
+
+        const cachedUser = await redis.get(`user:${email}`);
+        if (cachedUser) {
+            const user = cachedUser; // Upstash auto-deserializes, no JSON.parse needed
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
+            const token = jwt.sign(
+                { id: user.id, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
+            );
+            return res.json({ token, user: { id: user.id, username: user.username, email: user.email, role: user.role } });
+        }
         const user = await getUserByEmail(email);
         if (!user) return res.status(400).json({ msg: "Invalid credentials" });
 
@@ -40,7 +55,13 @@ export const login = async (req, res) => {
 
 export const AdminGetAllUsers = async (req, res) => {
     try {
+        const cachedUsers = await redis.get("users");
+        if (cachedUsers) {
+            // Return same shape as DB response so frontend doesn't break
+            return res.status(200).json({ msg: "Users fetched successfully", users: cachedUsers });
+        }
         const users = await getAllUsers();
+        await redis.set("users", users, { ex: 60 * 60 * 24 }); // Upstash handles serialization
         res.status(200).json({ msg: "Users fetched successfully", users });
     } catch (err) {
         console.error(err);
