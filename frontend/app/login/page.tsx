@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../context/page";
 import { Eye, EyeOff } from "lucide-react";
@@ -14,6 +14,16 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+
+    useEffect(() => {
+        const res = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/users`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
+    }, []);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();

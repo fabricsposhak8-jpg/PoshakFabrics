@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { createUser, getUserByEmail, getAllUsers } from "../models/auth_model.js";
+import { createUser, getUserByEmail, getAllUsers, GetUsers } from "../models/auth_model.js";
 import redis from "../middlewares/Redis.js";
 
 export const register = async (req, res) => {
@@ -22,7 +22,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
 
-        const cachedUser = await redis.get(`user:${email}`);
+        const cachedUser = await redis.get(`Allusers:${email}`);
         if (cachedUser) {
             const user = cachedUser; // Upstash auto-deserializes, no JSON.parse needed
             const isMatch = await bcrypt.compare(password, user.password);
@@ -57,7 +57,6 @@ export const AdminGetAllUsers = async (req, res) => {
     try {
         const cachedUsers = await redis.get("users");
         if (cachedUsers) {
-            // Return same shape as DB response so frontend doesn't break
             return res.status(200).json({ msg: "Users fetched successfully", users: cachedUsers });
         }
         const users = await getAllUsers();
@@ -68,3 +67,19 @@ export const AdminGetAllUsers = async (req, res) => {
         res.status(500).json({ msg: "Server error" });
     }
 };
+
+
+export const GetAllUsers = async (req, res) => {
+    try {
+        const cachedUsers = await redis.get("Allusers");
+        if (cachedUsers) {
+            return res.status(200).json({ msg: "Users fetched successfully", users: cachedUsers });
+        }
+        const users = await GetUsers();
+        await redis.set("Allusers", users, { ex: 60 * 60 * 24 });
+        res.status(200).json({ msg: "Users fetched successfully", users });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: "Server error" });
+    }
+}

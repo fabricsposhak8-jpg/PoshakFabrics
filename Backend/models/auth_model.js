@@ -23,3 +23,9 @@ export const getAllUsers = async () => {
     const result = await pool.query(querry);
     return result.rows;
 }
+
+export const GetUsers = async () => {
+    const querry = `SELECT id, username, email, role, password,created_at FROM users where role='user' ORDER BY created_at DESC`;
+    const result = await pool.query(querry);
+    return result.rows;
+} 
