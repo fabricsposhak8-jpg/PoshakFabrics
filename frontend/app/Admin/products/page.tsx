@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
     X, ImagePlus, Tag, Package, Info, Layers,
     Percent, CheckCircle2, ArrowRight, Loader2,
-    DollarSign, ListFilter, Scissors
+    DollarSign, ListFilter, Scissors, Sparkles
 } from 'lucide-react'
 
 const API = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -41,6 +41,7 @@ export default function AddProductPage() {
     const router = useRouter()
     const [success, setSuccess] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [aiLoading, setAiLoading] = useState(false)
     const [token, setToken] = useState("")
     const [images, setImages] = useState<File[]>([])
     const [previews, setPreviews] = useState<string[]>([])
@@ -132,6 +133,32 @@ export default function AddProductPage() {
             console.error(err)
         } finally {
             setLoading(false)
+        }
+    }
+
+    const modifyDescriptionWithAI = async () => {
+        setAiLoading(true)
+        try {
+            const res = await fetch(`${API}/api/chatbot/modify-description`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    description: product.description,
+                    fabric_details: fabric_details
+                })
+            })
+            if (res.status === 200) {
+                const data = await res.json()
+                setProduct(p => ({ ...p, description: data.description }))
+                setFabricDetails(data.fabric_details)
+            }
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setAiLoading(false)
         }
     }
 
@@ -335,6 +362,48 @@ export default function AddProductPage() {
                             </button>
                         </div>
                     </Section>
+
+
+
+                    {/* AI Enhance Button */}
+                    <div className="relative">
+                        <div className={`absolute -inset-0.5 bg-gradient-to-r from-[#B9974F] via-[#e2c47a] to-[#B9974F] rounded-2xl blur opacity-60 ${aiLoading ? "" : "animate-pulse"}`} />
+                        <button
+                            type="button"
+                            onClick={modifyDescriptionWithAI}
+                            disabled={aiLoading || loading}
+                            className="relative w-full flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-sm
+                                bg-gradient-to-r from-[#1a1208] via-[#2d1f0a] to-[#1a1208]
+                                text-[#e2c47a] border border-[#B9974F]/40
+                                hover:from-[#B9974F] hover:via-[#d4b87a] hover:to-[#B9974F]
+                                hover:text-white hover:border-transparent
+                                hover:shadow-[0_0_30px_rgba(185,151,79,0.5)]
+                                disabled:opacity-70 disabled:cursor-not-allowed
+                                transition-all duration-500 overflow-hidden group"
+                        >
+                            {/* Shimmer sweep */}
+                            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700
+                                bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+                            {aiLoading ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
+                                    <span className="tracking-wide">Enhancing with AI…</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Sparkles className="h-4 w-4 flex-shrink-0 drop-shadow-[0_0_6px_rgba(226,196,122,0.8)]" />
+                                    <span className="tracking-wide">Enhance with AI</span>
+                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full
+                                        bg-[#B9974F]/20 text-[#e2c47a] border border-[#B9974F]/30
+                                        group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30
+                                        transition-all duration-300">
+                                        AI
+                                    </span>
+                                </>
+                            )}
+                        </button>
+                    </div>
 
                     {/* Submit */}
                     <button
