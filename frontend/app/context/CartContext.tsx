@@ -121,8 +121,7 @@ export default function CartProvider({ children }: { children: React.ReactNode }
                 return;
             }
 
-            const data = await res.json();
-            if (data.status === 200) {
+            if (res.ok) {
                 setCart((prev) => prev.filter((p) => p.id !== id));
             }
         } catch (error) {

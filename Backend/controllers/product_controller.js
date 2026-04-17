@@ -22,7 +22,6 @@ export const getAllProductsController = async (req, res) => {
 
         const cachedProducts = await redis.get("products");
         if (cachedProducts) {
-            console.log("Returning cached products");
             return res.status(200).json(cachedProducts);
         }
         const products = await getAllProducts();

@@ -42,7 +42,7 @@ export const getCart = async (userId) => {
         GROUP BY 
             p.id, p.name, p.brand, p.price, p.currency, p.type, p.category
     `, [userId]);
-    
+
     // Ensure quantity is returned as a number
     return result.rows.map(item => ({
         ...item,
