@@ -102,6 +102,7 @@ export default function ClothesPage({ params }: PageProps) {
                 }
             })
             const result = await res.json();
+            console.log(result);
 
             const filtered = (Array.isArray(result) ? result : []).filter(
                 (item: any) => item.type.toLowerCase() === lowerType

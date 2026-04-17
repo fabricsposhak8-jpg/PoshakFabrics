@@ -9,7 +9,7 @@ export const createProductController = async (req, res) => {
         }
 
         const products = await getAllProducts();
-        await redis.set("products", JSON.stringify(products));
+        await redis.set("products", products);
         return res.status(200).json(product);
     } catch (err) {
         console.error(err);
@@ -22,10 +22,11 @@ export const getAllProductsController = async (req, res) => {
 
         const cachedProducts = await redis.get("products");
         if (cachedProducts) {
-            return res.status(200).json(JSON.parse(cachedProducts));
+            console.log("Returning cached products");
+            return res.status(200).json(cachedProducts);
         }
         const products = await getAllProducts();
-        await redis.set("products", JSON.stringify(products));
+        await redis.set("products", products);
         return res.status(200).json(products);
     } catch (err) {
         console.error(err);
@@ -52,7 +53,7 @@ export const updateProductController = async (req, res) => {
         }
 
         const products = await getAllProducts();
-        await redis.set("products", JSON.stringify(products));
+        await redis.set("products", products);
         return res.status(200).json(product);
     } catch (err) {
         console.error(err);
@@ -66,11 +67,11 @@ export const getProductByIdController = async (req, res) => {
 
         const cachedProductbyID = await redis.get(`product:${req.params.id}`)
         if (cachedProductbyID) {
-            return res.status(200).json(JSON.parse(cachedProductbyID));
+            return res.status(200).json(cachedProductbyID);
         }
 
         const product = await getProductById(req.params.id);
-        await redis.set(`product:${req.params.id}`, JSON.stringify(product), { ex: 60 * 60 * 24 })
+        await redis.set(`product:${req.params.id}`, product, { ex: 60 * 60 * 24 })
         return res.status(200).json(product);
     } catch (err) {
         console.error(err);

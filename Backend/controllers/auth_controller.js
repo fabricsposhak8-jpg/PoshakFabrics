@@ -10,11 +10,13 @@ export const register = async (req, res) => {
         if (existingUser) return res.status(400).json({ msg: "User already exists" });
 
         const user = await createUser(username, email, password);
-        await redis.del("users"); // clear users cache so it refreshes next fetch
-        res.status(201).json({ msg: "User created", user });
+        await redis.del("Allusers");
+        const Allusers = await GetUsers();
+        await redis.set("Allusers", Allusers);
+        return res.status(200).json({ msg: "User created", user });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ msg: "Server error" });
+        return res.status(500).json({ msg: "Server error" });
     }
 };
 
@@ -60,7 +62,7 @@ export const AdminGetAllUsers = async (req, res) => {
             return res.status(200).json({ msg: "Users fetched successfully", users: cachedUsers });
         }
         const users = await getAllUsers();
-        await redis.set("users", users, { ex: 60 * 60 * 24 }); // Upstash handles serialization
+        await redis.set("users", users); // Upstash handles serialization
         res.status(200).json({ msg: "Users fetched successfully", users });
     } catch (err) {
         console.error(err);
@@ -76,7 +78,7 @@ export const GetAllUsers = async (req, res) => {
             return res.status(200).json({ msg: "Users fetched successfully", users: cachedUsers });
         }
         const users = await GetUsers();
-        await redis.set("Allusers", users, { ex: 60 * 60 * 24 });
+        await redis.set("Allusers", users);
         res.status(200).json({ msg: "Users fetched successfully", users });
     } catch (err) {
         console.error(err);

@@ -25,7 +25,7 @@ export const getOrder = async (req, res) => {
         }
 
         const order = await GetOrder(user_id);
-        await redis.set(`order:${user_id}`, JSON.stringify(order));
+        await redis.set(`order:${user_id}`, order);
         res.status(200).json({ msg: "Order fetched successfully", order });
     } catch (error) {
         console.log(error);
@@ -42,7 +42,7 @@ export const adminGetOrder = async (req, res) => {
         }
 
         const order = await AdminGetOrder();
-        await redis.set(`order`, JSON.stringify(order));
+        await redis.set(`order`, order);
         res.status(200).json({ msg: "Order fetched successfully", order });
     } catch (error) {
         console.log(error);
@@ -59,7 +59,7 @@ export const adminGetSpecificOrder = async (req, res) => {
         }
 
         const order = await AdminGetSpecificOrder(req.params.id);
-        await redis.set(`order:${req.params.id}`, JSON.stringify(order));
+        await redis.set(`order:${req.params.id}`, order);
         res.status(200).json({ msg: "Order fetched successfully", order });
     } catch (error) {
         console.log(error);
@@ -72,10 +72,10 @@ export const deleteSpecificOrder = async (req, res) => {
 
         const order = await DeleteSpecificOrder(req.params.id);
         await redis.del(`order:${req.params.id}`);
-        res.status(200).json({ msg: "Order deleted successfully", order });
+        return res.status(200).json({ msg: "Order deleted successfully", order });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ msg: "Server error" });
+        return res.status(500).json({ msg: "Server error" });
     }
 }
 
@@ -89,11 +89,11 @@ export const specificUserOrder = async (req, res) => {
         }
 
         const order = await SpecificUserOrder(req.params.id);
-        await redis.set(`order:${req.params.id}`, JSON.stringify(order));
-        res.status(200).json({ msg: "Order fetched successfully", order });
+        await redis.set(`order:${req.params.id}`, order);
+        return res.status(200).json({ msg: "Order fetched successfully", order });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ msg: "Server error" });
+        return res.status(500).json({ msg: "Server error" });
     }
 }
 
@@ -103,10 +103,10 @@ export const AdminUpdateStatus = async (req, res) => {
 
         const order = await UpdateStatus(id, order_status, payment_status, is_delivered);
         await redis.del(`order:${id}`);
-        await redis.set(`order:${id}`, JSON.stringify(order));
-        res.status(200).json({ msg: "Order updated successfully", order });
+        await redis.set(`order:${id}`, order);
+        return res.status(200).json({ msg: "Order updated successfully", order });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ msg: "Server error" });
+        return res.status(500).json({ msg: "Server error" });
     }
 }
