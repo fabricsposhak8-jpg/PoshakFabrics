@@ -17,9 +17,9 @@ export default function CollectionsPreview() {
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/user`
             );
             const data = await response.json();
+
             const filtered = data.filter((item: any) => item.type === type);
 
-            // Parse images if string
             const parsed = filtered.map((p: any) => ({
                 ...p,
                 images: typeof p.images === "string" ? JSON.parse(p.images) : p.images,

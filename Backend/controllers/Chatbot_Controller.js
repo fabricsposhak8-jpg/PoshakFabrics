@@ -100,7 +100,7 @@ export const ModifyDescription = async (req, res) => {
 
         const { description, fabric_details } = req.body
 
-
+        console.log(description, fabric_details)
 
 
         const response = await ai.models.generateContent({
@@ -198,6 +198,135 @@ OUTPUT FORMAT:
 
         const parsed = JSON.parse(response.text);
 
+        return res.json({
+            description: parsed.description,
+            fabric_details: parsed.fabric_details
+        });
+
+    } catch (error) {
+
+        console.error(error);
+        return res.status(500).json({ text: "Something went wrong. Please try again." });
+    }
+}
+
+
+
+export const GenerateDescription = async (req, res) => {
+
+    try {
+
+        const { name, price, type, category, brand } = req.body;
+
+        const inlineImages = (req.files || []).map(img => ({
+            inlineData: {
+                data: img.buffer.toString("base64"),
+                mimeType: img.mimetype
+            }
+        }));
+
+        console.log(`Received AI Enhance Request for: ${name} with ${inlineImages.length} images`);
+
+        const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: [
+                {
+                    role: "user",
+                    parts: [
+                        {
+                            text: `
+Please analyze the attached images visually along with the basic product details below.
+
+Basic Details:
+- Name: ${name || "N/A"}
+- Price: Rs. ${price || "N/A"}
+- Category: ${category || "N/A"}
+- Brand: ${brand || "-"}
+- Type: ${type || "-"}
+
+Based heavily on what you see in the pictures (color, embroidery, patterns, etc.) and the basic details, generate a sales-optimized description and accurately extract the fabric details.
+          `
+                        },
+                        ...inlineImages
+                    ]
+                }
+            ],
+            config: {
+                systemInstruction: `
+You are a professional eCommerce product content optimizer for a clothing brand "Poshak Fabrics".
+
+Your وظیفہ (task) is to transform raw, messy product text into a clean, structured, and sales-optimized format.
+
+-------------------------
+TASKS:
+-------------------------
+
+1. DESCRIPTION OPTIMIZATION:
+- Rewrite the description to be attractive, professional, and persuasive.
+- Use simple and clear English.
+- Add a light emotional/sales tone (e.g., "perfect for festive wear", "elegant look").
+- Keep it concise (3–4 lines max).
+- Remove hashtags (#), dots (...), and unnecessary repetition.
+
+2. FABRIC DETAILS EXTRACTION:
+- Extract meaningful product attributes from the given text.
+- Convert them into separate key-value pairs.
+- DO NOT keep everything in one line.
+
+3. STANDARDIZE KEYS:
+Always use clean and consistent keys like:
+- Fabric
+- Work
+- Dupatta
+- Outfit Type
+- Sizes
+- Shirt Length
+- Price
+
+4. CLEANING RULES:
+- Fix spelling mistakes (e.g., "Chikankari" → "Chikankari")
+- Remove symbols (#, ..., etc.)
+- Normalize sizes format: "S, M, L (Chest: 18, 21, 22)"
+- Always use "PKR" for price
+
+5. DATA QUALITY:
+- Do NOT duplicate same information
+- Do NOT invent missing data
+- Only extract what exists in input
+
+-------------------------
+STRICT OUTPUT RULES:
+-------------------------
+
+- Return ONLY valid JSON
+- No explanation, no extra text
+- No markdown
+- No comments
+- JSON must be directly parsable
+
+-------------------------
+OUTPUT FORMAT:
+-------------------------
+
+{
+  "description": "Clean, attractive, and sales-focused product description",
+  "fabric_details": [
+    { "key": "Fabric", "value": "..." },
+    { "key": "Work", "value": "..." },
+    { "key": "Dupatta", "value": "..." },
+    { "key": "Outfit Type", "value": "..." },
+    { "key": "Sizes", "value": "..." },
+    { "key": "Shirt Length", "value": "..." },
+    { "key": "Price", "value": "..." }
+  ]
+}
+` }
+
+
+        });
+
+
+        const parsed = JSON.parse(response.text);
         return res.json({
             description: parsed.description,
             fabric_details: parsed.fabric_details

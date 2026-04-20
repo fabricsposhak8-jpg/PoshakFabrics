@@ -139,16 +139,22 @@ export default function AddProductPage() {
     const modifyDescriptionWithAI = async () => {
         setAiLoading(true)
         try {
-            const res = await fetch(`${API}/api/chatbot/modify-description`, {
+
+            const formData = new FormData()
+            Object.entries(product).forEach(([k, v]) => {
+                if (k !== "description") {
+                    formData.append(k, v)
+                }
+            })
+            // Append the images
+            images.forEach(img => formData.append("images", img))
+
+            const res = await fetch(`${API}/api/chatbot/generate-description`, {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
+                    "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    description: product.description,
-                    fabric_details: fabric_details
-                })
+                body: formData
             })
             if (res.status === 200) {
                 const data = await res.json()
@@ -393,7 +399,7 @@ export default function AddProductPage() {
                             ) : (
                                 <>
                                     <Sparkles className="h-4 w-4 flex-shrink-0 drop-shadow-[0_0_6px_rgba(226,196,122,0.8)]" />
-                                    <span className="tracking-wide">Enhance with AI</span>
+                                    <span className="tracking-wide">Generate Description and Fabric Details with AI</span>
                                     <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full
                                         bg-[#B9974F]/20 text-[#e2c47a] border border-[#B9974F]/30
                                         group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30
