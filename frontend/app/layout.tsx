@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     "Pakistani clothing",
   ],
   icons: {
-    icon: "/Logo.ico",
+    icon: "/Logo.png",
   },
   openGraph: {
     title: "Poshak Fabrics | Premium Clothing Store in Pakistan",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: "Poshak Fabrics",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Poshak Fabrics - Premium Clothing Store in Pakistan",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: "Poshak Fabrics | Premium Clothing Store in Pakistan",
     description:
       "Buy premium fabrics, unstitched suits and clothing online from Poshak Fabrics.",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.png"],
   },
   alternates: {
     canonical: "https://poshakfabrics.org",

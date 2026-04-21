@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { createUser, getUserByEmail, getAllUsers, GetUsers } from "../models/auth_model.js";
 import redis from "../middlewares/Redis.js";
+import nodemailer from "nodemailer";
 
 export const register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -10,10 +11,49 @@ export const register = async (req, res) => {
         if (existingUser) return res.status(400).json({ msg: "User already exists" });
 
         const user = await createUser(username, email, password);
-        await redis.del("Allusers");
-        const Allusers = await GetUsers();
-        await redis.set("Allusers", Allusers);
-        return res.status(200).json({ msg: "User created", user });
+        
+        if (user) {
+            await redis.del("Allusers");
+            const Allusers = await GetUsers();
+            await redis.set("Allusers", Allusers);
+
+            // Send Welcome Email
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.USER_EMAIL,
+                    pass: process.env.USER_PASS
+                }
+            });
+
+            const mailOptions = {
+                from: process.env.USER_EMAIL,
+                to: email,
+                subject: 'Welcome to Poshak Fabrics!',
+                html: `
+                    <h2>Welcome to Poshak Fabrics, ${username}!</h2>
+                    <p>We are thrilled to have you join our community.</p>
+                    <p>At Poshak Fabrics, you will find the finest ethnic wear and premium collections delivered straight to your door across Pakistan.</p>
+                    <p>Feel free to browse our latest collections and let us know if you need any assistance.</p>
+                    <br/>
+                    <p>Best Regards,</p>
+                    <p><strong>Poshak Fabrics Team</strong></p>
+                `
+            };
+
+            // Send email asynchronously
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error("Error sending welcome email: ", error);
+                } else {
+                    console.log('Welcome email sent to: ' + info.response);
+                }
+            });
+
+            return res.status(200).json({ msg: "User created", user });
+        } else {
+            return res.status(400).json({ msg: "Failed to create user. Please try again." });
+        }
     } catch (err) {
         console.error(err);
         return res.status(500).json({ msg: "Server error" });

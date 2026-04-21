@@ -29,7 +29,7 @@ const PAYMENT_METHODS = [
         color: "from-green-500 to-emerald-600",
         bg: "from-green-50 to-emerald-50",
         border: "border-green-200",
-        number: "0342-1852394",
+        number: "0342-6659927",
     },
     {
         id: "jazzcash",
@@ -39,7 +39,7 @@ const PAYMENT_METHODS = [
         color: "from-red-500 to-orange-500",
         bg: "from-red-50 to-orange-50",
         border: "border-red-200",
-        number: "0342-1852394",
+        number: "0345-0117043",
     },
 ];
 
@@ -194,8 +194,10 @@ export default function CheckoutPage() {
             })
             const data = await res.json();
             if (data.success) {
+                console.log("Order created successfully");
                 setSuccess(true);
             } else {
+                console.log("Order failed");
                 setError(data.msg);
                 setOrderFailed(true);
             }
