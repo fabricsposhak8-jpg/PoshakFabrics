@@ -69,7 +69,7 @@ export const getProductByIdController = async (req, res) => {
             return res.status(200).json(cachedProductbyID);
         }
 
-        const product = await getProductById(req.params.id);
+        const product = await getProductById(req.params.id)
         await redis.set(`product:${req.params.id}`, product, { ex: 60 * 60 * 24 })
         return res.status(200).json(product);
     } catch (err) {

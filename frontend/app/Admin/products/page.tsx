@@ -52,7 +52,7 @@ export default function AddProductPage() {
         name: "", brand: "", category: "", price: "",
         currency: "PKR", description: "", stock: "",
         status: "active", type: "stitched",
-        after_discou: "", discount_perc: ""
+        after_discou: "", discount_perc: "", gender: "female"
     })
 
     const [fabric_details, setFabricDetails] = useState([{ key: "", value: "" }])
@@ -119,7 +119,7 @@ export default function AddProductPage() {
                 body: formData
             })
             if (res.status === 200) {
-                setProduct({ name: "", brand: "", category: "", price: "", currency: "PKR", description: "", stock: "", status: "active", type: "stitched", after_discou: "", discount_perc: "" })
+                setProduct({ name: "", brand: "", category: "", price: "", currency: "PKR", description: "", stock: "", status: "active", type: "stitched", after_discou: "", discount_perc: "", gender: "female" })
                 setFabricDetails([{ key: "", value: "" }])
                 setDiscount({ discount_perc: "", after_dicou: "" })
                 setImages([]); setPreviews([])
@@ -244,6 +244,12 @@ export default function AddProductPage() {
                                 <select className={inputCls} name="status" value={product.status} onChange={handleChange}>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
+                                </select>
+                            </Field>
+                            <Field label="Gender">
+                                <select className={inputCls} name="type_gender" value={product.gender} onChange={handleChange}>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
                                 </select>
                             </Field>
                         </div>

@@ -43,7 +43,13 @@ const Page = () => {
       <Chatbot />
 
       {/* Collections Preview Section */}
-      <CollectionsPreview />
+
+      {/* Female Collection */}
+      <CollectionsPreview gender="female" />
+
+      {/* Male Collection */}
+      <CollectionsPreview gender="male" />
+
 
       {/* About Section */}
       <section id="about" className="py-12 md:py-16 lg:py-20 px-4 md:px-8 lg:px-16">

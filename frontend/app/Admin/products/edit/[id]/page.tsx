@@ -53,6 +53,7 @@ const EditPage = () => {
         currency: "PKR", description: "", stock: "",
         status: "active", type: "stitched",
         discount_perc: "", after_discou: "",
+        gender: "female"
     })
 
     const [fabric_details, setFabricDetails] = useState([{ key: "", value: "" }])
@@ -86,6 +87,7 @@ const EditPage = () => {
                     currency: data.currency || "PKR", description: data.description || "",
                     stock: data.stock?.toString() || "", status: data.status || "active",
                     type: data.type || "stitched", discount_perc: dp, after_discou: ad,
+                    gender: data.gender || "female"
                 })
                 setDiscount({ discount_perc: dp, after_dicou: ad })
                 const imgs = typeof data.images === "string" ? JSON.parse(data.images) : data.images
@@ -282,6 +284,12 @@ const EditPage = () => {
                                 <select className={inputCls} name="status" value={product.status} onChange={handleChange}>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
+                                </select>
+                            </Field>
+                            <Field label="Gender">
+                                <select className={inputCls} name="type_gender" value={product.gender} onChange={handleChange}>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
                                 </select>
                             </Field>
                         </div>

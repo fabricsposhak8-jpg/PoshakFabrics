@@ -14,7 +14,8 @@ export const createProduct = async (productData = {}, files) => {
         status,
         type,
         after_discou,
-        discount_perc
+        discount_perc,
+        type_gender
 
     } = productData;
 
@@ -46,10 +47,10 @@ export const createProduct = async (productData = {}, files) => {
     }
 
     const result = await pool.query(`
-        INSERT INTO products (name,brand,category,description,price,currency,fabric_details,stock,status,type,images,after_discou,discount_perc)
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) 
+        INSERT INTO products (name,brand,category,description,price,currency,fabric_details,stock,status,type,images,after_discou,discount_perc,type_gender)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) 
         RETURNING *;
-        `, [name, brand, category, description, price, currency, JSON.stringify(parsedFabricDetails), stock, status, type, JSON.stringify(images), after_discou, discount_perc])
+        `, [name, brand, category, description, price, currency, JSON.stringify(parsedFabricDetails), stock, status, type, JSON.stringify(images), after_discou, discount_perc, type_gender])
 
     return result.rows[0];
 }
@@ -124,7 +125,7 @@ export const updateProduct = async (id, productData = {}, files) => {
         }
     }
 
-    const result = await pool.query('UPDATE products SET name=COALESCE($1,name),brand=COALESCE($2,brand),category=COALESCE($3,category),description=COALESCE($4,description),price=COALESCE($5,price),currency=COALESCE($6,currency),fabric_details=COALESCE($7,fabric_details),stock=COALESCE($8,stock),status=COALESCE($9,status),type=COALESCE($10,type),images = COALESCE($11, images), after_discou=COALESCE($12,after_discou),discount_perc=COALESCE($13,discount_perc) WHERE id=$14 RETURNING *', [
+    const result = await pool.query('UPDATE products SET name=COALESCE($1,name),brand=COALESCE($2,brand),category=COALESCE($3,category),description=COALESCE($4,description),price=COALESCE($5,price),currency=COALESCE($6,currency),fabric_details=COALESCE($7,fabric_details),stock=COALESCE($8,stock),status=COALESCE($9,status),type=COALESCE($10,type),images = COALESCE($11, images), after_discou=COALESCE($12,after_discou),discount_perc=COALESCE($13,discount_perc),type_gender=COALESCE($14,type_gender) WHERE id=$15 RETURNING *', [
         productData.name || null,
         productData.brand || null,
         productData.category || null,
@@ -138,6 +139,7 @@ export const updateProduct = async (id, productData = {}, files) => {
         JSON.stringify(images),
         productData.after_discou || null,
         productData.discount_perc || null,
+        productData.type_gender || null,
         id
     ])
     return result.rows[0];

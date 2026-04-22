@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ShoppingCart, Menu, X, ChevronDown, Search, User } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
 import { useUser } from "@/app/context/page";
+import CollectionsPreview from "../CollectionsPreview";
 
 const Header = () => {
 
@@ -13,6 +14,8 @@ const Header = () => {
     const { totalItems } = useCart();
     const [scrolled, setScrolled] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [menOpen, setMenOpen] = useState(false);
+    const [womenOpen, setWomenOpen] = useState(false);
     const { logout } = useUser();
 
     useEffect(() => {
@@ -70,6 +73,57 @@ const Header = () => {
                                 Contact
                             </Link>
                         </li>
+                        <li className="relative group">
+                            {/* Trigger */}
+                            <div className="flex items-center gap-1 cursor-pointer hover:text-black transition duration-300">
+                                <span>Collections</span>
+                                <ChevronDown
+                                    size={16}
+                                    className="transition-transform duration-300 group-hover:rotate-180"
+                                />
+                            </div>
+
+                            {/* Dropdown */}
+                            <div className="absolute left-0 top-full mt-3 w-72 bg-white border border-gray-200 rounded-xl shadow-xl 
+                  opacity-0 invisible translate-y-3 
+                  group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
+                  transition-all duration-300 z-50 p-5 space-y-4">
+
+                                {/* Men's Section */}
+                                <div>
+                                    <h4 className="text-sm font-semibold text-gray-500 mb-2">Men</h4>
+                                    <Link
+                                        href="/user/collections/unstitched?gender=male"
+                                        className="block px-3 py-2 rounded-md hover:bg-gray-100 transition"
+                                    >
+                                        Unstitched
+                                    </Link>
+                                </div>
+
+                                {/* Divider */}
+                                <div className="border-t border-gray-200"></div>
+
+                                {/* Women's Section */}
+                                <div>
+                                    <h4 className="text-sm font-semibold text-gray-500 mb-2">Women</h4>
+
+                                    <Link
+                                        href="/user/collections/unstitched?gender=female"
+                                        className="block px-3 py-2 rounded-md hover:bg-gray-100 transition"
+                                    >
+                                        Unstitched
+                                    </Link>
+
+                                    <Link
+                                        href="/user/collections/stitched?gender=female"
+                                        className="block px-3 py-2 rounded-md hover:bg-gray-100 transition"
+                                    >
+                                        Stitched
+                                    </Link>
+                                </div>
+                            </div>
+                        </li>
+
                         <li>
                             <Link
                                 href="/user/orders"
@@ -168,22 +222,95 @@ const Header = () => {
 
                 {/* Mobile Sidebar */}
                 {isOpen && (
-                    <div className="md:hidden absolute top-full left-0 w-full bg-white border-b shadow-lg flex flex-col p-6 space-y-2 animate-in slide-in-from-top-5">
+                    <div className="md:hidden absolute top-full left-0 w-full bg-white border-b shadow-lg flex flex-col p-6 space-y-3 animate-in slide-in-from-top-5">
+
+                        {/* Basic Links */}
                         <Link href="/" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Home</Link>
                         <Link href="/#about" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">About</Link>
                         <Link href="/#contact" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">Contact</Link>
-                        <Link href="/user/orders" onClick={() => setIsOpen(false)} className="text-[#B9974F] hover:text-[#a0833e] font-medium text-lg">My Orders</Link>
+
+                        {/* MEN DROPDOWN */}
+                        <div>
+                            <div
+                                onClick={() => setMenOpen(!menOpen)}
+                                className="flex justify-between items-center cursor-pointer text-gray-800 font-semibold text-lg"
+                            >
+                                <span>Men</span>
+                                <ChevronDown
+                                    size={18}
+                                    className={`transition-transform duration-300 ${menOpen ? "rotate-180" : ""}`}
+                                />
+                            </div>
+
+                            <div className={`overflow-hidden transition-all duration-300 ${menOpen ? "max-h-40 mt-2" : "max-h-0"}`}>
+                                <Link
+                                    href="/user/collections/unstitched?gender=male"
+                                    onClick={() => setIsOpen(false)}
+                                    className="block pl-4 py-2 text-gray-600 hover:text-black"
+                                >
+                                    Unstitched
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* WOMEN DROPDOWN */}
+                        <div>
+                            <div
+                                onClick={() => setWomenOpen(!womenOpen)}
+                                className="flex justify-between items-center cursor-pointer text-gray-800 font-semibold text-lg"
+                            >
+                                <span>Women</span>
+                                <ChevronDown
+                                    size={18}
+                                    className={`transition-transform duration-300 ${womenOpen ? "rotate-180" : ""}`}
+                                />
+                            </div>
+
+                            <div className={`overflow-hidden transition-all duration-300 ${womenOpen ? "max-h-40 mt-2" : "max-h-0"}`}>
+                                <Link
+                                    href="/user/collections/unstitched?gender=female"
+                                    onClick={() => setIsOpen(false)}
+                                    className="block pl-4 py-2 text-gray-600 hover:text-black"
+                                >
+                                    Unstitched
+                                </Link>
+
+                                <Link
+                                    href="/user/collections/stitched?gender=female"
+                                    onClick={() => setIsOpen(false)}
+                                    className="block pl-4 py-2 text-gray-600 hover:text-black"
+                                >
+                                    Stitched
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Orders */}
+                        <Link href="/user/orders" onClick={() => setIsOpen(false)} className="text-gray-700 hover:text-black font-medium text-lg">
+                            My Orders
+                        </Link>
+
                         <hr className="border-gray-200 my-2" />
+
+                        {/* Auth */}
                         {isLoggedIn ? (
-                            <Link href="/" onClick={() => {
-                                logout();
-                                setIsOpen(false);
-                                setIsLoggedIn(false);
-                            }} className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium">
+                            <Link
+                                href="/"
+                                onClick={() => {
+                                    logout();
+                                    setIsOpen(false);
+                                    setIsLoggedIn(false);
+                                }}
+                                className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium text-center"
+                            >
                                 Logout
                             </Link>
                         ) : (
-                            <Link href="/login" onClick={() => setIsOpen(false)} className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium">
+                            <Link
+                                href="/login"
+                                onClick={() => setIsOpen(false)}
+                                className="w-full bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition font-medium text-center"
+                            >
                                 Login
                             </Link>
                         )}

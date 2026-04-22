@@ -3,13 +3,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Tag } from "lucide-react";
 
-export default function CollectionsPreview() {
+export default function CollectionsPreview({ gender }: { gender: string }) {
     const [products, setProducts] = useState<any[]>([]);
-    const [activeType, setActiveType] = useState("stitched");
+    const [activeType, setActiveType] = useState("unstitched");
     const [loading, setLoading] = useState(true);
     const [touchedProducts, setTouchedProducts] = useState<number[]>([]);
 
     const handlecollection = async (type: string) => {
+        console.log(type);
         setActiveType(type);
         setLoading(true);
         try {
@@ -18,8 +19,9 @@ export default function CollectionsPreview() {
             );
             const data = await response.json();
 
-            const filtered = data.filter((item: any) => item.type === type);
+            const filtered = data.filter((item: any) => item.type === type && item.type_gender === gender);
 
+            console.log(filtered);
             const parsed = filtered.map((p: any) => ({
                 ...p,
                 images: typeof p.images === "string" ? JSON.parse(p.images) : p.images,
@@ -34,7 +36,7 @@ export default function CollectionsPreview() {
     };
 
     useEffect(() => {
-        handlecollection("stitched");
+        handlecollection("unstitched");
     }, []);
 
     return (
@@ -44,31 +46,44 @@ export default function CollectionsPreview() {
                 {/* Heading */}
                 <div className="text-center mb-12">
                     <span className="inline-block text-[#B9974F] text-sm font-semibold tracking-widest uppercase mb-2">
-                        Curated For You
+                        Curated Elegance
                     </span>
-                    <h2 className="text-4xl font-bold text-gray-900 mb-3">Our Collections</h2>
+                    <h2 className="text-4xl font-bold text-gray-900 mb-3">
+                        {gender === "female" ? "Women’s" : "Men’s"} Collection
+                    </h2>
                     <p className="text-gray-500 max-w-md mx-auto text-sm">
-                        Handcrafted with passion — explore our finest stitched and unstitched pieces.
+                        Timeless designs crafted with precision — discover styles that define your presence.
                     </p>
                 </div>
 
-                {/* Toggle Tabs */}
-                <div className="flex justify-center mb-10">
-                    <div className="flex bg-gray-100 rounded-full p-1 gap-1">
-                        {["stitched", "unstitched"].map((type) => (
-                            <button
-                                key={type}
-                                onClick={() => handlecollection(type)}
-                                className={`px-7 py-2.5 rounded-full cursor-pointer text-sm font-semibold transition-all duration-300 capitalize ${activeType === type
-                                    ? "bg-[#B9974F] text-white shadow-md scale-105"
-                                    : "text-gray-600 hover:text-gray-900"
-                                    }`}
-                            >
-                                {type}
-                            </button>
-                        ))}
-                    </div>
+                <div>
+
+
                 </div>
+
+
+
+
+                {/* Toggle Tabs */}
+
+                {gender === "female" && (
+                    <div className="flex justify-center mb-10">
+                        <div className="flex bg-gray-100 rounded-full p-1 gap-1">
+                            {["unstitched", "stitched"].map((type) => (
+                                <button
+                                    key={type}
+                                    onClick={() => handlecollection(type)}
+                                    className={`px-7 py-2.5 rounded-full cursor-pointer text-sm font-semibold transition-all duration-300 capitalize ${activeType === type
+                                        ? "bg-[#B9974F] text-white shadow-md scale-105"
+                                        : "text-gray-600 hover:text-gray-900"
+                                        }`}
+                                >
+                                    {type}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Product Grid */}
                 {loading ? (
@@ -85,6 +100,7 @@ export default function CollectionsPreview() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+
                         {products.map((product: any) => (
                             <div
                                 key={product.id}
@@ -186,6 +202,7 @@ export default function CollectionsPreview() {
                 )}
 
                 {/* View All Button */}
+
                 <div className="mt-10 flex justify-center">
                     <Link
                         href={`/user/collections/${activeType}`}

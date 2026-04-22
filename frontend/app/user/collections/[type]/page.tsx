@@ -8,6 +8,7 @@ import {
 
 interface PageProps {
     params: Promise<{ type: string }>;
+    searchParams: Promise<{ gender: string }>;
 }
 
 function ImageCarousel({ images, name }: { images: { url: string }[], name: string }) {
@@ -84,8 +85,9 @@ function ImageCarousel({ images, name }: { images: { url: string }[], name: stri
     );
 }
 
-export default function ClothesPage({ params }: PageProps) {
+export default function ClothesPage({ params, searchParams }: PageProps) {
     const { type } = React.use(params);
+    const { gender } = React.use(searchParams);
     const lowerType = type.toLowerCase();
 
     const [products, setProducts] = React.useState<any[]>([]);
@@ -105,7 +107,7 @@ export default function ClothesPage({ params }: PageProps) {
             console.log(result);
 
             const filtered = (Array.isArray(result) ? result : []).filter(
-                (item: any) => item.type.toLowerCase() === lowerType
+                (item: any) => item.type.toLowerCase() === lowerType && item.type_gender.toLowerCase() === gender.toLowerCase()
             );
 
             setProducts(filtered);
