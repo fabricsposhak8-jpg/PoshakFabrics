@@ -3,6 +3,10 @@ import bcrypt from "bcrypt";
 import { createUser, getUserByEmail, getAllUsers, GetUsers } from "../models/auth_model.js";
 import redis from "../middlewares/Redis.js";
 import nodemailer from "nodemailer";
+import { OAuth2Client } from "google-auth-library";
+import crypto from "crypto";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -11,7 +15,7 @@ export const register = async (req, res) => {
         if (existingUser) return res.status(400).json({ msg: "User already exists" });
 
         const user = await createUser(username, email, password);
-        
+
         if (user) {
             await redis.del("Allusers");
             const Allusers = await GetUsers();
@@ -125,3 +129,43 @@ export const GetAllUsers = async (req, res) => {
         res.status(500).json({ msg: "Server error" });
     }
 }
+
+export const googleLogin = async (req, res) => {
+    try {
+        const { token } = req.body;
+        // Verify the token with Google
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const { email, name } = ticket.getPayload();
+
+        let user = await getUserByEmail(email);
+
+        if (!user) {
+            const randomPassword = crypto.randomBytes(16).toString("hex");
+            user = await createUser(name, email, randomPassword);
+
+            await redis.del("Allusers");
+            const Allusers = await GetUsers();
+            await redis.set("Allusers", Allusers);
+        }
+
+        // Generate JWT token just like normal login
+        const jwtToken = jwt.sign(
+            { id: user.id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN }
+        );
+
+        return res.json({
+            token: jwtToken,
+            user: { id: user.id, username: user.username, email: user.email, role: user.role }
+        });
+
+    } catch (err) {
+        console.error("Google Login Error:", err);
+        return res.status(500).json({ msg: "Server error during Google Login" });
+    }
+};

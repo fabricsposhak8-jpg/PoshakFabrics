@@ -5,6 +5,8 @@ import "./globals.css";
 import UserProvider from "./context/page";
 import CartProvider from "./context/CartContext";
 import LayoutClient from "../components/LayoutClient";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://poshakfabrics.org"),
@@ -90,7 +92,10 @@ export default function RootLayout({
       <body className="flex flex-col min-h-screen">
         <CartProvider>
           <UserProvider>
-            <LayoutClient>{children}</LayoutClient>
+            <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
+              <LayoutClient>{children}</LayoutClient>
+            </GoogleOAuthProvider>
+
           </UserProvider>
         </CartProvider>
       </body>

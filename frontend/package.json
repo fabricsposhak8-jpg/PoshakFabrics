@@ -9,6 +9,7 @@
     "lint": "eslint . --ext .js,.ts,.jsx,.tsx"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.13.5",
     "autoprefixer": "^10.4.24",
     "gsap": "^3.14.2",
     "lucide-react": "^0.564.0",
