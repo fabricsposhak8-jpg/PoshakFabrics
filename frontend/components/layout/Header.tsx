@@ -52,7 +52,7 @@ const Header = () => {
                         <li>
                             <Link
                                 href="/"
-                                className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full"
+                                className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#B9974F] after:transition-all after:duration-300 hover:after:w-full"
                             >
                                 Home
                             </Link>
@@ -60,7 +60,7 @@ const Header = () => {
                         <li>
                             <Link
                                 href="/#about"
-                                className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full"
+                                className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#B9974F] after:transition-all after:duration-300 hover:after:w-full"
                             >
                                 About
                             </Link>
@@ -68,7 +68,7 @@ const Header = () => {
                         <li>
                             <Link
                                 href="/#contact"
-                                className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full"
+                                className="hover:text-black transition duration-200 relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#B9974F] after:transition-all after:duration-300 hover:after:w-full"
                             >
                                 Contact
                             </Link>
