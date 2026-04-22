@@ -205,7 +205,7 @@ export default function CollectionsPreview({ gender }: { gender: string }) {
 
                 <div className="mt-10 flex justify-center">
                     <Link
-                        href={`/user/collections/${activeType}`}
+                        href={`/user/collections/${activeType}/?gender=${gender}`}
                         className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#B9974F] text-white rounded-full font-semibold text-sm shadow-lg hover:bg-[#a0833e] hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
                     >
                         View All {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Collection
