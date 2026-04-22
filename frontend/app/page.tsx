@@ -11,7 +11,7 @@ const Page = () => {
       <div className="relative w-full h-[400px] md:h-[600px] lg:h-[700px] overflow-hidden">
         {/* Background Image */}
         <img
-          src="/HomeImage.png"
+          src="/Home1.png"
           alt="Hero Image"
           className="w-full h-full object-cover object-center sm:object-top"
         />

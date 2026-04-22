@@ -14,11 +14,11 @@ const Slider = () => {
     const images = [
         "Slider (1).jpeg",
         "Slider (2).jpeg",
-        "Slider (3).jpeg",
+        "Men'collec.jpeg",
         "Slider (4).jpeg",
         "Slider (5).jpeg",
         "Slider (6).jpeg",
-        "Slider (7).jpeg",
+        "Men'scollec.jpeg",
         "Slider (8).jpeg",
     ];
 
