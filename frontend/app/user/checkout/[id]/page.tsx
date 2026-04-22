@@ -454,7 +454,7 @@ export default function CheckoutPage() {
                                     </div>
                                     <div className="mt-3 flex items-center gap-2 text-white/75 text-xs">
                                         <User className="h-3.5 w-3.5" />
-                                        <span>Account Name: Poshak Fabrics</span>
+                                        <span>Account Name: Abdul Rafi</span>
                                     </div>
                                 </div>
                                 <p className="text-xs text-gray-400 mt-4 text-center leading-relaxed">
