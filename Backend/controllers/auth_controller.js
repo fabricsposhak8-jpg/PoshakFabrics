@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { createUser, getUserByEmail, getAllUsers, GetUsers } from "../models/auth_model.js";
+import { createUser, getUserByEmail, getAllUsers, GetUsers, UpdateProfile } from "../models/auth_model.js";
 import redis from "../middlewares/Redis.js";
 import nodemailer from "nodemailer";
 import { OAuth2Client } from "google-auth-library";
@@ -169,3 +169,12 @@ export const googleLogin = async (req, res) => {
         return res.status(500).json({ msg: "Server error during Google Login" });
     }
 };
+
+
+export const ProfileUpdate = async (req, res) => {
+    const { id, username, email, phonenumber, address } = req.body;
+
+    const user = await UpdateProfile(id, username, email, phonenumber, address, req.files)
+
+    return res.status(200).json({ msg: "Profile updated successfully", user });
+}

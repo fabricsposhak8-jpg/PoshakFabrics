@@ -9,6 +9,9 @@ type User = {
     username: string
     email: string
     role: "user" | "admin";
+    phonenumber?: string
+    address?: string
+    profilepic?: string
 }
 
 
@@ -17,6 +20,7 @@ type Context = {
     isLoaded: boolean
     login: (user: User) => void
     logout: () => void
+    updateUser: (data: Partial<User>) => void
 }
 
 const UserContext = createContext<Context | null>(null)
@@ -48,6 +52,15 @@ export default function UserProvider({ children }: { children: React.ReactNode }
         }
     }
 
+    const updateUser = (data: Partial<User>) => {
+        setUser(prev => {
+            if (!prev) return prev;
+            const updated = { ...prev, ...data };
+            localStorage.setItem("user", JSON.stringify(updated));
+            return updated;
+        });
+    }
+
     const logout = () => {
         setUser(null)
         localStorage.removeItem("token");
@@ -56,7 +69,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
     }
 
     return (
-        <UserContext.Provider value={{ user, isLoaded, login, logout }}>
+        <UserContext.Provider value={{ user, isLoaded, login, logout, updateUser }}>
             {children}
         </UserContext.Provider>
     )
