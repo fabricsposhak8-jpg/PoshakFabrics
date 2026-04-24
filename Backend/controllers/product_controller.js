@@ -46,14 +46,15 @@ export const deleteProductController = async (req, res) => {
 
 export const updateProductController = async (req, res) => {
     try {
-        const product = await updateProduct(req.params.id, req.body, req.files);
-        if (product) {
-            await redis.del(`product:${req.params.id}`);
-        }
 
+        const product = await updateProduct(req.params.id, req.body, req.files);
+        if (!product) {
+            return res.status(404).json({ msg: "Product not found" });
+        }
+        await redis.del(`product:${req.params.id}`);
         const products = await getAllProducts();
         await redis.set("products", products);
-        return res.status(200).json(product);
+        return res.status(200).json({ msg: "Product updated successfully" });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ msg: "Server error" });
@@ -70,6 +71,9 @@ export const getProductByIdController = async (req, res) => {
         }
 
         const product = await getProductById(req.params.id)
+        if (!product) {
+            return res.status(404).json({ msg: "Product not found" });
+        }
         await redis.set(`product:${req.params.id}`, product, { ex: 60 * 60 * 24 })
         return res.status(200).json(product);
     } catch (err) {

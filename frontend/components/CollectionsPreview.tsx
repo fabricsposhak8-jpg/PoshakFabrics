@@ -21,7 +21,7 @@ export default function CollectionsPreview({ gender }: { gender: string }) {
 
             const filtered = data.filter((item: any) => item.type === type && item.type_gender === gender);
 
-            console.log(filtered);
+
             const parsed = filtered.map((p: any) => ({
                 ...p,
                 images: typeof p.images === "string" ? JSON.parse(p.images) : p.images,

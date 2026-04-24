@@ -104,11 +104,11 @@ export default function ClothesPage({ params, searchParams }: PageProps) {
                 }
             })
             const result = await res.json();
-            console.log(result);
 
             const filtered = (Array.isArray(result) ? result : []).filter(
                 (item: any) => item.type === lowerType && item.type_gender === gender
             );
+
 
             setProducts(filtered);
         } catch (error) {

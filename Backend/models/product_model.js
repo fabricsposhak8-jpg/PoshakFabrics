@@ -83,8 +83,10 @@ export const deleteProduct = async (id) => {
 }
 
 export const updateProduct = async (id, productData = {}, files) => {
-
     const checkingproduct = await pool.query('SELECT * FROM products WHERE id=$1', [id])
+    if (checkingproduct.rows.length === 0) {
+        return null; // Product not found
+    }
 
     let images = checkingproduct.rows[0].images || [];
 

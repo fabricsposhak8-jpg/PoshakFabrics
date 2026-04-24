@@ -53,7 +53,7 @@ const EditPage = () => {
         currency: "PKR", description: "", stock: "",
         status: "active", type: "stitched",
         discount_perc: "", after_discou: "",
-        gender: "female"
+        type_gender: "female"
     })
 
     const [fabric_details, setFabricDetails] = useState([{ key: "", value: "" }])
@@ -87,7 +87,7 @@ const EditPage = () => {
                     currency: data.currency || "PKR", description: data.description || "",
                     stock: data.stock?.toString() || "", status: data.status || "active",
                     type: data.type || "stitched", discount_perc: dp, after_discou: ad,
-                    gender: data.gender || "female"
+                    type_gender: data.type_gender || "female"
                 })
                 setDiscount({ discount_perc: dp, after_dicou: ad })
                 const imgs = typeof data.images === "string" ? JSON.parse(data.images) : data.images
@@ -188,6 +188,10 @@ const EditPage = () => {
                 }
             )
             const data = await res.json()
+            if (!data) {
+                alert("Product not updated!")
+                return
+            }
             if (res.status === 200) {
                 setSuccess(true)
                 setTimeout(() => { setSuccess(false); router.push("/Admin/products/AllProducts") }, 2000)
@@ -287,7 +291,7 @@ const EditPage = () => {
                                 </select>
                             </Field>
                             <Field label="Gender">
-                                <select className={inputCls} name="type_gender" value={product.gender} onChange={handleChange}>
+                                <select className={inputCls} name="type_gender" value={product.type_gender} onChange={handleChange}>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                 </select>
