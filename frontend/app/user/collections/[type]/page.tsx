@@ -107,7 +107,7 @@ export default function ClothesPage({ params, searchParams }: PageProps) {
             console.log(result);
 
             const filtered = (Array.isArray(result) ? result : []).filter(
-                (item: any) => item.type.toLowerCase() === lowerType && item.type_gender.toLowerCase() === gender.toLowerCase()
+                (item: any) => item.type === lowerType && item.type_gender === gender
             );
 
             setProducts(filtered);
