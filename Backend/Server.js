@@ -9,6 +9,7 @@ import messageRoutes from "./routers/message_router.js";
 import cartRoutes from "./routers/cart_router.js";
 import orderRoutes from "./routers/Order_router.js";
 import chatbotRoutes from "./routers/chatbot_router.js";
+import saleRoutes from "./routers/sale_router.js";
 
 
 const app = express();
@@ -57,11 +58,10 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/chatbot", chatbotRoutes);
+app.use("/api/sale", saleRoutes);
+
 app.get("/", (req, res) => res.send("POSHAK FABRICS Backend running!"));
 
-app.get('/loaderio-c722561c9961abe80c14681afc643645.txt', (req, res) => {
-    res.send('loaderio-c722561c9961abe80c14681afc643645');
-});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

@@ -29,6 +29,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: "/Admin/orders", label: "Orders" },
         { href: "/Admin/customers", label: "Customers" },
         { href: "/Admin/messages", label: "Messages" },
+        { href: "/Admin/sale", label: "Sale" },
     ];
 
     return (

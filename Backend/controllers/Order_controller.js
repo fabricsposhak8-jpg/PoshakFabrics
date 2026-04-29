@@ -3,12 +3,13 @@ import { getUserById } from "../models/auth_model.js";
 import redis from "../middlewares/Redis.js";
 import nodemailer from "nodemailer";
 
-// Safely parse a Redis cached string — if it's stale/corrupt, delete the key and return null
-const safeParseCache = async (key, raw) => {
+//
+const getCachedData = async (key) => {
     try {
-        return JSON.parse(raw);
-    } catch {
-        console.warn(`[Redis] Corrupt cache for key "${key}" — clearing it.`);
+        const cached = await redis.get(key);
+        return cached; // Upstash automatically parses JSON
+    } catch (error) {
+        console.warn(`[Redis] Error retrieving key "${key}" — clearing it.`, error);
         await redis.del(key);
         return null;
     }
@@ -83,14 +84,13 @@ export const getOrder = async (req, res) => {
         const user_id = req.user.id;
         const key = `order:${user_id}`;
 
-        const cachedOrder = await redis.get(key);
+        const cachedOrder = await getCachedData(key);
         if (cachedOrder) {
-            const parsed = await safeParseCache(key, cachedOrder);
-            if (parsed) return res.status(200).json({ msg: "Order fetched successfully from cache", order: parsed });
+            return res.status(200).json({ msg: "Order fetched successfully from cache", order: cachedOrder });
         }
 
         const order = await GetOrder(user_id);
-        await redis.set(key, JSON.stringify(order));
+        await redis.set(key, order);
         return res.status(200).json({ msg: "Order fetched successfully", order });
     } catch (error) {
         console.log(error);
@@ -102,14 +102,13 @@ export const adminGetOrder = async (req, res) => {
     try {
         const key = `order`;
 
-        const cachedOrder = await redis.get(key);
+        const cachedOrder = await getCachedData(key);
         if (cachedOrder) {
-            const parsed = await safeParseCache(key, cachedOrder);
-            if (parsed) return res.status(200).json({ msg: "Order fetched successfully from Cache", order: parsed });
+            return res.status(200).json({ msg: "Order fetched successfully from Cache", order: cachedOrder });
         }
 
         const order = await AdminGetOrder();
-        await redis.set(key, JSON.stringify(order));
+        await redis.set(key, order);
         return res.status(200).json({ msg: "Order fetched successfully", order });
     } catch (error) {
         console.log(error);
@@ -121,14 +120,13 @@ export const adminGetSpecificOrder = async (req, res) => {
     try {
         const key = `order:${req.params.id}`;
 
-        const cachedOrder = await redis.get(key);
+        const cachedOrder = await getCachedData(key);
         if (cachedOrder) {
-            const parsed = await safeParseCache(key, cachedOrder);
-            if (parsed) return res.status(200).json({ msg: "Order fetched successfully from Cache", order: parsed });
+            return res.status(200).json({ msg: "Order fetched successfully from Cache", order: cachedOrder });
         }
 
         const order = await AdminGetSpecificOrder(req.params.id);
-        await redis.set(key, JSON.stringify(order));
+        await redis.set(key, order);
         return res.status(200).json({ msg: "Order fetched successfully", order });
     } catch (error) {
         console.log(error);
@@ -151,14 +149,13 @@ export const specificUserOrder = async (req, res) => {
     try {
         const key = `order:${req.params.id}`;
 
-        const cachedOrder = await redis.get(key);
+        const cachedOrder = await getCachedData(key);
         if (cachedOrder) {
-            const parsed = await safeParseCache(key, cachedOrder);
-            if (parsed) return res.status(200).json({ msg: "Order fetched successfully from Cache", order: parsed });
+            return res.status(200).json({ msg: "Order fetched successfully from Cache", order: cachedOrder });
         }
 
         const order = await SpecificUserOrder(req.params.id);
-        await redis.set(key, JSON.stringify(order));
+        await redis.set(key, order);
         return res.status(200).json({ msg: "Order fetched successfully", order });
     } catch (error) {
         console.log(error);
@@ -172,7 +169,7 @@ export const AdminUpdateStatus = async (req, res) => {
 
         const order = await UpdateStatus(id, order_status, payment_status, is_delivered);
         await redis.del(`order:${id}`);
-        await redis.set(`order:${id}`, JSON.stringify(order));
+        await redis.set(`order:${id}`, order);
         return res.status(200).json({ msg: "Order updated successfully", order });
     } catch (error) {
         console.log(error);
