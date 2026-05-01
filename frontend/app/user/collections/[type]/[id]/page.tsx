@@ -166,18 +166,35 @@ const UserProductView = () => {
     const [product, setProduct] = useState<any>(null);
     const { addToCart } = useCart();
     const [added, setAdded] = useState(false);
+    const [filtersales, setFiltersales] = useState<any>(null);
+    console.log("filtersales", filtersales);
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/user/${id}`, {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                })
+                const [res, res1] = await Promise.all([
+                    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/user/${id}`, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    })
+                    ,
+                    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sale/getsale`, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    })
+                ])
+
+
                 const data = await res.json();
+                const saleData = await res1.json();
+                console.log("Details", data);
+                const filtersales = saleData.response.filter((item: any) => item.product_id == id);
+                setFiltersales(filtersales)
                 if (typeof data.fabric_details === "string") {
                     try { data.fabric_details = JSON.parse(data.fabric_details); } catch { data.fabric_details = []; }
                 }
@@ -246,7 +263,9 @@ const UserProductView = () => {
                             <p className="text-2xl font-bold text-[#B9974F] mt-2">
                                 {product.after_discou && Number(product.after_discou) < Number(product.price) ? (
                                     <>
-                                        {Number(product.after_discou).toLocaleString()}
+                                        {filtersales && filtersales.length > 0
+                                            ? Number(filtersales[0].discounted_price).toLocaleString()
+                                            : Number(product.after_discou).toLocaleString()}
                                         <span className="mx-3 line-through text-gray-300 text-lg font-medium italic">
                                             {Number(product.price).toLocaleString()}
                                         </span>

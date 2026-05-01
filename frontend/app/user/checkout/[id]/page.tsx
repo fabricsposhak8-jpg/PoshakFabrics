@@ -101,7 +101,7 @@ export default function CheckoutPage() {
     const [copied, setCopied] = useState(false);
     const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
     const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
-
+    const [saleDetails, setSaleDetails] = useState<any>([]);
     const [address, setAddress] = useState<AddressForm>({
         city: "",
         country: "Pakistan",
@@ -117,17 +117,29 @@ export default function CheckoutPage() {
         const fetchProduct = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await fetch(`${API}/api/products/user/${id}`, {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                })
+                const [res, sales] = await Promise.all([
+                    fetch(`${API}/api/products/user/${id}`, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    }),
+                    fetch(`${API}/api/sale/getsale`, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    })
+                ])
                 const data = await res.json();
+                console.log(data);
+                const saleData = await sales.json();
                 if (typeof data.images === "string") {
                     try { data.images = JSON.parse(data.images); } catch { data.images = []; }
                 }
                 setProduct(data);
+                const filtersales = saleData.response?.filter((item: any) => item.product_id == data.id) ?? [];
+                setSaleDetails(filtersales);
             } catch {
                 setError("Failed to load product.");
             } finally {
@@ -303,7 +315,9 @@ export default function CheckoutPage() {
     );
 
     const unitPrice = product ? Number(product.price) : 0;
-    const subtotal = unitPrice * address.quantity;
+    const hasSale = saleDetails && saleDetails.length > 0;
+    const discountedUnitPrice = hasSale ? Number(saleDetails[0].discounted_price) : unitPrice;
+    const subtotal = discountedUnitPrice * address.quantity;
     const totalPrice = subtotal + SHIPPING;
 
     return (
@@ -591,8 +605,15 @@ export default function CheckoutPage() {
                                                     <span className="text-xs text-gray-400">{product.brand}</span>
                                                 </div>
                                             )}
-                                            <p className="text-sm font-bold text-[#B9974F] mt-1.5">
-                                                {unitPrice.toLocaleString()} {product.currency}
+                                            <p className="text-sm font-bold text-[#B9974F] mt-1.5 flex items-center gap-2 flex-wrap">
+                                                {hasSale ? (
+                                                    <>
+                                                        <span>{discountedUnitPrice.toLocaleString()} {product.currency}</span>
+                                                        <span className="line-through text-gray-300 text-xs font-medium">{unitPrice.toLocaleString()}</span>
+                                                    </>
+                                                ) : (
+                                                    <span>{unitPrice.toLocaleString()} {product.currency}</span>
+                                                )}
                                             </p>
                                         </div>
                                     </div>
@@ -600,11 +621,18 @@ export default function CheckoutPage() {
 
                                 {/* Price breakdown */}
                                 <div className="flex flex-col gap-2.5 text-sm">
+                                    {hasSale && (
+                                        <div className="flex justify-between text-gray-400">
+                                            <span>Original × {address.quantity}</span>
+                                            <span className="line-through">{(unitPrice * address.quantity).toLocaleString()} {product?.currency}</span>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between text-gray-500">
-                                        <span>
-                                            Price × {address.quantity}
+                                        <span className="flex items-center gap-1">
+                                            {hasSale && <Tag className="h-3 w-3 text-[#B9974F]" />}
+                                            {hasSale ? "Discounted" : "Price"} × {address.quantity}
                                         </span>
-                                        <span className="font-medium text-gray-700">
+                                        <span className={`font-medium ${hasSale ? "text-[#B9974F]" : "text-gray-700"}`}>
                                             {subtotal.toLocaleString()} {product?.currency}
                                         </span>
                                     </div>
