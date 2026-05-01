@@ -10,7 +10,7 @@ import cartRoutes from "./routers/cart_router.js";
 import orderRoutes from "./routers/Order_router.js";
 import chatbotRoutes from "./routers/chatbot_router.js";
 import saleRoutes from "./routers/sale_router.js";
-
+import rateLimit from "express-rate-limit";
 
 const app = express();
 
@@ -31,6 +31,19 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP
+    message: {
+        success: false,
+        msg: "Too many requests, please try again later."
+    }
+});
+
+// apply globally
+app.use(limiter);
 
 export const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
