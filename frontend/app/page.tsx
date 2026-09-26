@@ -108,7 +108,7 @@ const Page = () => {
             <span className="text-[#C19344] text-[10px] md:text-xs font-black uppercase tracking-[0.3em]">New Season Collection</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 tracking-tighter leading-none italic">
-            POSHAK <span className="text-[#C19344] text-stroke-white"> FABRICS</span>
+            POSHAK <span className="text-[#C19344] text-stroke-white">FABRICS</span>
           </h1>
           <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-200 mb-10 max-w-2xl font-medium leading-relaxed drop-shadow-lg">
             Discover our curated selection of artisanal fabrics that blend centuries of tradition with contemporary luxury.
