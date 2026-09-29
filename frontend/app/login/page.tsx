@@ -30,8 +30,6 @@ export default function LoginPage() {
             });
 
             const data = await res.json();
-
-            console.log("data", data);
         }
         fetchUser();
     }, []);

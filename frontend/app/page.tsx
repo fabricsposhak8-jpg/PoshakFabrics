@@ -50,7 +50,6 @@ const Page = () => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sale/getsale`);
         const data = await res.json();
         if (data && data.response) {
-          console.log(data.response);
           setSale(data.response);
         }
       } catch (err) {

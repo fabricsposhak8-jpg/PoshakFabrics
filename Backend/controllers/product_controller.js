@@ -37,6 +37,12 @@ export const deleteProductController = async (req, res) => {
     try {
         const product = await deleteProduct(req.params.id);
         await redis.del(`product:${req.params.id}`);
+        await redis.del("products");
+
+        if (!product) {
+            return res.status(404).json({ msg: "Product not found" });
+        }
+
         return res.status(200).json({ msg: "Product deleted successfully" });
     } catch (err) {
         console.error(err);

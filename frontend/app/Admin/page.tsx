@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function AdminDashboard() {
-    const { user } = useUser();
+    const { user,isLoaded } = useUser();
     const router = useRouter();
 
     const [productsCount, setProductsCount] = useState(0);
@@ -55,12 +55,13 @@ export default function AdminDashboard() {
     };
 
     useEffect(() => {
+       if(!isLoaded) return;
         if (!user || user.role !== "admin") {
-            router.push("/");
+            router.replace("/");
         } else {
             getDetails(); // call only if user is admin
         }
-    }, [user]);
+    }, [isLoaded, user, router]);
 
     if (!user) return null;
 

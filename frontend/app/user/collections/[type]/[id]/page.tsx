@@ -167,7 +167,6 @@ const UserProductView = () => {
     const { addToCart } = useCart();
     const [added, setAdded] = useState(false);
     const [filtersales, setFiltersales] = useState<any>(null);
-    console.log("filtersales", filtersales);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -192,7 +191,6 @@ const UserProductView = () => {
 
                 const data = await res.json();
                 const saleData = await res1.json();
-                console.log("Details", data);
                 const filtersales = saleData.response.filter((item: any) => item.product_id == id);
                 setFiltersales(filtersales)
                 if (typeof data.fabric_details === "string") {

@@ -76,9 +76,18 @@ const AllProducts = () => {
                 }
             });
             const data = await response.json();
+            if (!response.ok) {
+                if (response.status === 404) {
+                    await fetchProducts();
+                    setSuccessMessage("Product was already removed. Product list refreshed.");
+                    setTimeout(() => setSuccessMessage(""), 3000);
+                    return;
+                }
+                throw new Error(data.message || "Failed to delete product");
+            }
             setSuccessMessage("Product deleted successfully.");
             setTimeout(() => setSuccessMessage(""), 3000);
-            fetchProducts();
+            await fetchProducts();
         } catch (error) {
             console.error("Error deleting product:", error);
         } finally {
